@@ -1,0 +1,43 @@
+# LoRA distillation config for v0.6.2.
+#
+# Trains a fresh LoRA on the same Qwen3-Coder-30B-A3B base used by
+# v0.6.0, using the teacher-distilled corpus from the teacher-distillation step.
+#
+# Recipe rationale:
+# - rank=32 lifts expressive capacity vs v0.6.0's rank=16; the
+# reliability fixes need more parameter-mass to land than
+# constitutional alignment did
+# - lr=5e-5 between v0.6.0's 1e-4 and a smaller-step setting; 200 iters
+# gives enough mass without overfitting on a small ~300-record
+# corpus
+# - max_seq_length=2048 since the corpus prompts are short and
+# Qwen3-Coder-30B comfortably handles 2k tokens
+# - num_layers=16 -- LoRA on the last 16 transformer blocks
+#
+# Used by: scripts/74_delta2_train.sh
+
+model: "Qwen/Qwen3-Coder-30B-A3B-Instruct"
+data: "~/.azriel/data/delta2"
+adapter_path: "~/.azriel/checkpoints/lora-azriel-v0.6.2-delta2"
+
+fine_tune_type: lora
+train: true
+
+num_layers: 8
+batch_size: 1
+iters: 200
+learning_rate: 5.0e-5
+
+val_batches: 5
+steps_per_eval: 25
+steps_per_report: 10
+save_every: 50
+
+# OOM at rank=32/num_layers=16/seq=2048 on the test machine (Metal command buffer
+# Insufficient Memory) -- backed off to a proven config.
+max_seq_length: 1024
+
+lora_parameters:
+  rank: 16
+  scale: 20.0
+  dropout: 0.05

@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Azriel · Skills</title>
+    <link rel="icon" type="image/png" href="/static/logo.png" />
+    <script>
+      // Pick up the theme the user selected on the chat page so colors
+      // match across tabs. Runs before <style> parses so no FOUC.
+      try {
+        const t = localStorage.getItem("azriel.theme");
+        if (t) document.documentElement.dataset.theme = t;
+      } catch (_) {}
+    </script>
+    <style>
+      :root[data-theme="dark"] {
+        --bg: #000000;
+        --panel: #0d0d0d;
+        --panel-2: #181818;
+        --border: #2a2a2a;
+        --fg: #ffffff;
+        --muted: #888888;
+        --accent: #ffffff;
+        --accent-bg: #1a1a1a;
+        --user: #1a1a1a;
+        --error: #ff5555;
+      }
+      :root[data-theme="light"] {
+        --bg: #ffffff;
+        --panel: #f7f7f7;
+        --panel-2: #ededed;
+        --border: #d8d8d8;
+        --fg: #000000;
+        --muted: #707070;
+        --accent: #000000;
+        --accent-bg: #f0f0f0;
+        --user: #f0f0f0;
+        --error: #c4302b;
+      }
+      :root[data-theme="sepia"] {
+        --bg: #f1e3c7;
+        --panel: #e6d5b0;
+        --panel-2: #dac39a;
+        --border: #b89e72;
+        --fg: #3b2a18;
+        --muted: #7a624a;
+        --accent: #8a4628;
+        --accent-bg: #d8b990;
+        --user: #d8c9a6;
+        --error: #a23a1f;
+      }
+      :root[data-theme="tabernacle"] {
+        --bg: #f7eed4;
+        --panel: #e9d6a4;
+        --panel-2: #ddc488;
+        --border: #b59345;
+        --fg: #2a1f15;
+        --muted: #786543;
+        --accent: #8b1f1f;
+        --accent-bg: #f3d8c3;
+        --user: #ecd9a9;
+        --error: #6b2727;
+      }
+      :root[data-theme="golgotha"] {
+        --bg: #161514;
+        --panel: #232120;
+        --panel-2: #2c2a28;
+        --border: #3a3633;
+        --fg: #d8d2cb;
+        --muted: #847d75;
+        --accent: #7a1a14;
+        --accent-bg: #2a1311;
+        --user: #2a2826;
+        --error: #c43a2c;
+      }
+      :root[data-theme="eden"] {
+        --bg: #0f1f15;
+        --panel: #1a2c20;
+        --panel-2: #243a2a;
+        --border: #2f4d36;
+        --fg: #e6f0d8;
+        --muted: #8da280;
+        --accent: #d6a850;
+        --accent-bg: #1f3522;
+        --user: #1d2a21;
+        --error: #c66848;
+      }
+      :root[data-theme="sinai"] {
+        --bg: #1c1d20;
+        --panel: #2a2b2f;
+        --panel-2: #34353a;
+        --border: #44464b;
+        --fg: #ecebe6;
+        --muted: #8e8d8a;
+        --accent: #e8662f;
+        --accent-bg: #2c1f17;
+        --user: #25272a;
+        --error: #ce4c2a;
+      }
+      :root[data-theme="throne"] {
+        --bg: #0d1a2e;
+        --panel: #16263e;
+        --panel-2: #1d3050;
+        --border: #2c4366;
+        --fg: #f0e6c4;
+        --muted: #6b89a7;
+        --accent: #2ec985;
+        --accent-bg: #0d2c1e;
+        --user: #182942;
+        --error: #d6543c;
+      }
+      :root[data-theme="bethel"] {
+        --bg: #0a0e2a;
+        --panel: #131a3d;
+        --panel-2: #1d2455;
+        --border: #2c3a73;
+        --fg: #e8e4ff;
+        --muted: #6e7397;
+        --accent: #f3c95d;
+        --accent-bg: #2a210e;
+        --user: #14193f;
+        --error: #d34a4a;
+      }
+      :root[data-theme="pentecost"] {
+        --bg: #1f0f08;
+        --panel: #2c1810;
+        --panel-2: #3b2118;
+        --border: #5a2d1d;
+        --fg: #fde8c2;
+        --muted: #b48766;
+        --accent: #f08720;
+        --accent-bg: #3e1d0c;
+        --user: #2a160c;
+        --error: #b8361b;
+      }
+      :root[data-theme="new-jerusalem"] {
+        --bg: #f7f4ec;
+        --panel: #ece4d2;
+        --panel-2: #e0d6bd;
+        --border: #c9bd9b;
+        --fg: #2b2620;
+        --muted: #897f70;
+        --accent: #c89c4f;
+        --accent-bg: #f4e8c8;
+        --user: #ebe2c6;
+        --error: #993d2c;
+      }
+      :root {
+        /* Aliases so existing skills.html CSS keeps working under any theme. */
+        --text: var(--fg);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          14px/1.55 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "Inter",
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      header {
+        padding: 22px 32px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+      .crumb {
+        color: var(--muted);
+      }
+      main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 28px 32px 96px;
+      }
+      .intro {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0 0 24px;
+      }
+      .create-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 16px 18px;
+        margin: 0 0 24px;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        background: var(--panel-2);
+      }
+      .create-skill {
+        white-space: nowrap;
+        font-size: 14px;
+        padding: 10px 18px;
+      }
+      .create-hint {
+        flex: 1 1 240px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition:
+          border-color 0.15s,
+          transform 0.15s;
+      }
+      .card:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+      .card-icon {
+        font-size: 28px;
+        line-height: 1;
+      }
+      .card-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0;
+      }
+      .card-sub {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 0;
+        flex: 1 1 auto;
+      }
+      .card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 4px;
+      }
+      .tag {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .card-launch {
+        background: var(--accent);
+        color: var(--accent-bg);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1 1 auto;
+      }
+      .card-launch:hover {
+        filter: brightness(1.05);
+      }
+      .card-preview {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .card-preview:hover {
+        border-color: var(--accent);
+      }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: color-mix(in srgb, var(--bg) 80%, transparent);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        max-width: 600px;
+        width: 92%;
+        max-height: 80vh;
+        overflow: auto;
+        padding: 24px;
+      }
+      .modal h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      .modal .sub {
+        color: var(--muted);
+        margin: 0 0 16px;
+        font-size: 13px;
+      }
+      .modal .kickoff {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+      .modal .meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 14px;
+      }
+      .modal .meta b {
+        color: var(--text);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+        justify-content: flex-end;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Azriel · Skills</h1>
+      <div class="crumb"><a href="/">← back to chat</a></div>
+    </header>
+
+    <main>
+      <p class="intro">
+        Skills are named workflows: a kickoff prompt + persona + style + tool
+        hints, packaged so you can launch a focused session in one click.
+        Launching a skill creates a fresh chat session pre-seeded with the
+        kickoff prompt; you tweak it, hit send, and Azriel takes it from there.
+      </p>
+
+      <div class="create-row">
+        <button class="card-launch create-skill" id="create-skill">
+          + Create a new personal skill with Azriel
+        </button>
+        <div class="create-hint">
+          Walks you through it: tell Azriel the workflow you want, iterate on
+          name + kickoff + voice, hit done. The new skill saves into "Your
+          skills" below automatically.
+        </div>
+      </div>
+
+      <div class="grid" id="skills-grid"></div>
+    </main>
+
+    <div class="modal-backdrop" id="preview-modal">
+      <div class="modal">
+        <h2 id="m-name"></h2>
+        <p class="sub" id="m-sub"></p>
+        <div class="kickoff" id="m-kickoff"></div>
+        <div class="meta" id="m-meta"></div>
+        <div class="modal-actions">
+          <button class="card-preview" id="m-cancel">Close</button>
+          <button class="card-launch" id="m-launch">Launch</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const SKILLS = [
+        {
+          id: "sermon-outline",
+          icon: "📖",
+          name: "Sermon Outline Builder",
+          sub: "3-point outline with intro, body, and call to response. Asks you for passage + audience first.",
+          kickoff:
+            "Help me outline a sermon. Ask me the passage I'm preaching from, the audience (Sunday-morning, youth, small group, etc.), and the one main point I want them to walk away with. Then build me a 3-point sermon with: a hook intro, three body points each with one supporting verse + one illustration, and a clear call to response.",
+          style: "conviction",
+          persona_mix: { interesting: 50, professional: 40 },
+          tools: ["bible_lookup", "crossref_lookup", "commentary_lookup"],
+        },
+        {
+          id: "daily-devotional",
+          icon: "🕯",
+          name: "Daily Devotional",
+          sub: "A short passage for today, a 3-paragraph reflection, and a closing prayer. Light pastoral tone.",
+          kickoff:
+            "Walk me through a daily devotional for today. Pick a short passage (under 6 verses) suited for a midweek read; quote it in BSB; reflect on it in three paragraphs touching observation, application, and prayer; close with a one-paragraph prayer in second-person voice.",
+          style: "pastoral",
+          persona_mix: { nurturing: 50, personal: 30, encouraging: 30 },
+          tools: ["bible_lookup"],
+        },
+        {
+          id: "doctrinal-check",
+          icon: "⚖️",
+          name: "Doctrinal Cross-check",
+          sub: "Run a claim through the 10-axis classifier; show supporting and opposing Scripture.",
+          kickoff:
+            "I want to cross-check a doctrinal claim. Use the doctrinal_check tool on the claim I'll give you next, then for each axis it flags, give me 2 verses that support the claim and 2 verses that complicate or oppose it. End with a one-paragraph synthesis from your own biblically-based frame.",
+          style: "scholar",
+          persona_mix: { interesting: 50, professional: 40, direct: 30 },
+          tools: ["doctrinal_check", "bible_lookup", "crossref_lookup"],
+        },
+        {
+          id: "prayer-walk",
+          icon: "🙏",
+          name: "Prayer Walk",
+          sub: "Seven-station guided prayer. Slow pacing, image-rich. Skip ahead at any time.",
+          kickoff:
+            "Guide me through a seven-station prayer walk. Each station: a one-line invitation + a Scripture verse + a single open-ended question to sit with. Use these stations in order: gratitude, confession, intercession (others), petition (self), Scripture meditation, listening silence, surrender. Pause between stations and wait for me to say 'next'.",
+          style: "pastoral",
+          thinking: true,
+          persona_mix: { poetic: 55, somber: 35, nurturing: 35 },
+          tools: ["bible_lookup"],
+        },
+        {
+          id: "bible-study-series",
+          icon: "📚",
+          name: "Bible Study Series",
+          sub: "Multi-week scaffold for a book or topic. Asks length + audience + depth, then proposes the arc.",
+          kickoff:
+            "Help me design a Bible study series. Ask me three short questions: (1) the book or topic, (2) the audience (teens, small group, women's group, etc.), (3) length (4 / 6 / 8 / 12 weeks). Then propose: an overarching theme, week-by-week passages and titles, and three discussion questions per week. Be concrete -- no fluff.",
+          style: "conviction",
+          persona_mix: { interesting: 60, professional: 35, direct: 30 },
+          tools: ["bible_lookup", "crossref_lookup", "commentary_lookup"],
+        },
+        {
+          id: "occasion-prep",
+          icon: "🤍",
+          name: "Funeral / Wedding Prep",
+          sub: "Pastoral context for a hard occasion. Asks the relationship + tone, suggests verses + outline.",
+          kickoff:
+            "I need help preparing for a service. Ask me: (1) is it a funeral, wedding, or other occasion, (2) my relationship to the person/couple, (3) the tone they'd want (joyful, somber, hopeful, mixed). Then suggest 4-5 Scripture passages appropriate for the occasion and outline a 10-minute message with intro / two anchoring scriptures / personal note / closing.",
+          style: "pastoral",
+          persona_mix: { nurturing: 60, personal: 40, somber: 30 },
+          tools: ["bible_lookup", "commentary_lookup"],
+        },
+      ];
+
+      function el(tag, cls, txt) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (txt != null) e.textContent = txt;
+        return e;
+      }
+
+      function uuid() {
+        return crypto.randomUUID
+          ? crypto.randomUUID()
+          : "s-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+      }
+
+      // Token substitution for skill kickoffs.
+      // {TODAY} -> "Wednesday, May 7"
+      // {DATE} -> ""
+      // {SEED} -> a fresh 6-char alphanumeric so the model sees
+      // different bytes each launch (helps decoder
+      // diversity even with low-temp sampling)
+      function expandKickoffTokens(text) {
+        if (!text) return text;
+        const now = new Date();
+        const today = now.toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        });
+        const iso =
+          now.getFullYear() +
+          "-" +
+          String(now.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(now.getDate()).padStart(2, "0");
+        const seed = Math.random().toString(36).slice(2, 8);
+        return text
+          .replaceAll("{TODAY}", today)
+          .replaceAll("{DATE}", iso)
+          .replaceAll("{SEED}", seed);
+      }
+
+      function launchSkill(s) {
+        // Apply skill state to localStorage so the chat picks it up
+        // automatically on first message.
+        if (s.style) localStorage.setItem("azriel.answer_style", s.style);
+        if (s.persona_mix !== undefined) {
+          localStorage.setItem(
+            "azriel.persona_mix",
+            JSON.stringify(s.persona_mix || {}),
+          );
+        }
+        if (s.thinking)
+          localStorage.setItem("azriel.thinking_mode", "deliberate");
+        else localStorage.setItem("azriel.thinking_mode", "instant");
+        // Fresh session so the kickoff isn't fighting prior context.
+        const sid = uuid();
+        localStorage.setItem("azriel.session_id", sid);
+        // Stash the kickoff prompt so the chat page can prefill the
+        // compose box on load. Expand {TODAY}/{DATE}/{SEED} so kickoffs
+        // that depend on today's date or want decoder variance get
+        // fresh values per launch.
+        sessionStorage.setItem(
+          "azriel.skill_kickoff",
+          expandKickoffTokens(s.kickoff),
+        );
+        sessionStorage.setItem("azriel.skill_name", s.name);
+        // Navigate to the chat (root) -- the chat page reads
+        // sessionStorage.azriel.skill_kickoff once and clears it.
+        location.href = "/";
+      }
+
+      // "Create a new personal skill with Azriel".
+      // Launches a fresh chat session pre-seeded with a self-contained
+      // skill-design kickoff. Azriel interviews the user (workflow,
+      // persona, voice, tools), iterates, and fires propose_skill at
+      // the end -- the runtime intercepts that tool call and surfaces
+      // the inline gold-accent save card on the chat page, which the
+      // user clicks to persist into Your skills below. No new
+      // backend; the existing propose_skill -> /skills/save chain
+      // handles persistence.
+      const SKILL_BUILDER_KICKOFF =
+        "Help me design a brand new personal skill that I'll use later " +
+        "as a one-click launcher. Treat this like a quick design " +
+        "interview:\n" +
+        " 1. Ask me ONE question at a time.\n" +
+        " 2. Start with: what kind of workflow am I trying to capture? " +
+        "(e.g. journaling routine, sermon outline, file-and-archive, " +
+        "study plan, prayer pattern.) Wait for my answer.\n" +
+        " 3. Then: what should the FIRST message Azriel sees look " +
+        "like when I launch this skill? (i.e. the kickoff prompt.) " +
+        "**CRITICAL:** the kickoff is the FIRST USER MESSAGE the " +
+        "future me will send to Azriel. Write it FROM MY perspective " +
+        'addressing Azriel: "Walk me through...", "Help me...", ' +
+        '"Open with a prayer for me, then ask me about...", ' +
+        '"my biggest blessing", "my journal". Never "your" -- ' +
+        'if it says "reflect on your blessing", future Azriel ' +
+        "reads that as the user telling Azriel to reflect on " +
+        "Azriel's blessing, which is wrong.\n" +
+        " 4. Then: which voice fits best (conviction / scholar / " +
+        "pastoral) and any persona-mix flavor (funny, nurturing, " +
+        "interesting, etc.)?\n" +
+        " 5. Then: which tools should the skill HINT AT (just NAMES " +
+        "stored as metadata, not actually fired in this conversation): " +
+        "bible_lookup, commentary_lookup, web_search, fs_write, etc.\n" +
+        " 6. Read back the assembled skill so I can confirm or tweak. " +
+        "Do NOT call any tools while reading back -- just write the " +
+        "name, kickoff, voice, and tool list as plain text.\n" +
+        ' 7. When I say "done" / "looks good" / "save it", fire ' +
+        '<tool>propose_skill(\"<short name>|<final kickoff prompt>\")</tool> ' +
+        "(MUST use the <tool>...</tool> wrapper, NOT bare paren " +
+        "syntax) so the save card appears. Click-to-save will land " +
+        "it in my Skills page automatically.\n\n" +
+        "Stay focused -- skill design only. If I drift off-topic, " +
+        "redirect me back. Do NOT call document_create, fs_write, or " +
+        "any other tool during this design conversation -- the tools " +
+        "list is metadata for the FUTURE skill launch, not actions " +
+        "to take now. Begin with question 1.";
+
+      document.getElementById("create-skill").onclick = () => {
+        // Skill-builder works best in conviction voice with no
+        // persona flavor so the interview stays crisp. Reset the
+        // chat-side persona to default; the user can still override
+        // mid-conversation if they want.
+        localStorage.setItem("azriel.answer_style", "conviction");
+        localStorage.setItem("azriel.persona_mix", JSON.stringify({}));
+        localStorage.setItem("azriel.thinking_mode", "instant");
+        const sid = uuid();
+        localStorage.setItem("azriel.session_id", sid);
+        sessionStorage.setItem("azriel.skill_kickoff", SKILL_BUILDER_KICKOFF);
+        sessionStorage.setItem("azriel.skill_name", "Skill builder");
+        location.href = "/";
+      };
+
+      function showPreview(s) {
+        document.getElementById("m-name").textContent = s.icon + " " + s.name;
+        document.getElementById("m-sub").textContent = s.sub;
+        document.getElementById("m-kickoff").textContent = s.kickoff;
+        const persona = s.persona_mix
+          ? Object.entries(s.persona_mix)
+              .filter(([k, v]) => v >= 10)
+              .map(([k, v]) => `${v}% ${k}`)
+              .join(", ")
+          : "default";
+        document.getElementById("m-meta").innerHTML =
+          `<b>style</b>: ${s.style || "conviction"} &nbsp;·&nbsp; ` +
+          `<b>persona</b>: ${persona || "default"} &nbsp;·&nbsp; ` +
+          `<b>thinking</b>: ${s.thinking ? "deliberate" : "instant"}<br>` +
+          `<b>tool hints</b>: ${(s.tools || []).join(", ") || "—"}`;
+        document.getElementById("m-launch").onclick = () => launchSkill(s);
+        document.getElementById("preview-modal").classList.add("open");
+      }
+
+      function closePreview() {
+        document.getElementById("preview-modal").classList.remove("open");
+      }
+      document.getElementById("m-cancel").onclick = closePreview;
+      document
+        .getElementById("preview-modal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "preview-modal") closePreview();
+        });
+
+      function renderCard(s, isUser) {
+        const card = el("div", "card");
+        card.appendChild(el("div", "card-icon", s.icon || "✦"));
+        card.appendChild(el("h3", "card-name", s.name));
+        card.appendChild(el("p", "card-sub", s.sub || ""));
+        const tags = el("div", "card-tags");
+        for (const t of (s.tools || []).slice(0, 4))
+          tags.appendChild(el("span", "tag", t));
+        if (s.thinking) tags.appendChild(el("span", "tag", "deliberate"));
+        if (isUser) tags.appendChild(el("span", "tag", "yours"));
+        card.appendChild(tags);
+        const actions = el("div", "card-actions");
+        const launchBtn = el("button", "card-launch", "Launch");
+        launchBtn.onclick = () => launchSkill(s);
+        const previewBtn = el("button", "card-preview", "Preview");
+        previewBtn.onclick = () => showPreview(s);
+        actions.appendChild(launchBtn);
+        actions.appendChild(previewBtn);
+        if (isUser) {
+          const delBtn = el("button", "card-preview", "Delete");
+          delBtn.onclick = async () => {
+            if (!confirm(`Delete skill "${s.name}"?`)) return;
+            const r = await fetch("/skills/" + encodeURIComponent(s.id), {
+              method: "DELETE",
+              credentials: "same-origin",
+            });
+            if (r.ok) card.remove();
+          };
+          actions.appendChild(delBtn);
+        }
+        card.appendChild(actions);
+        return card;
+      }
+
+      // If the user picks a new theme on the chat tab, this tab follows.
+      window.addEventListener("storage", (e) => {
+        if (e.key === "azriel.theme" && e.newValue) {
+          document.documentElement.dataset.theme = e.newValue;
+        }
+      });
+
+      // Render built-ins first, then load user-created skills.
+      const grid = document.getElementById("skills-grid");
+      for (const s of SKILLS) grid.appendChild(renderCard(s, false));
+
+      (async function loadUserSkills() {
+        try {
+          const r = await fetch("/skills/list", { credentials: "same-origin" });
+          if (!r.ok) return;
+          const userSkills = await r.json();
+          if (!Array.isArray(userSkills) || !userSkills.length) return;
+          // Section header
+          const main = document.querySelector("main");
+          const sep = el("h2", null, "Your skills");
+          sep.style.cssText =
+            "margin-top:32px;font-size:15px;color:var(--accent);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;";
+          main.appendChild(sep);
+          const userGrid = el("div", "grid");
+          main.appendChild(userGrid);
+          for (const s of userSkills) userGrid.appendChild(renderCard(s, true));
+        } catch (e) {
+          /* ignore -- user skills are optional */
+        }
+      })();
+    </script>
+  </body>
+</html>

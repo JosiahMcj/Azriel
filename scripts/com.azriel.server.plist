@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Azriel server -- launchd auto-restart definition.
+
+  Replaces the manual `tmux new-session -d -s server` workflow. Once
+  loaded with `launchctl bootstrap`, this:
+    - starts the server when the user logs in (RunAtLoad=true)
+    - restarts the process automatically if it exits for any reason
+      (KeepAlive=true) -- which is the whole point; we were losing
+      the server to silent crashes / sleep-wake events
+    - throttles restarts to no faster than every 20 seconds so a
+      crash-loop doesn't peg the GPU
+
+  Install (one-time, on a development machine):
+    cp ~/azriel-arch/scripts/com.azriel.server.plist \
+       ~/Library/LaunchAgents/com.azriel.server.plist
+    launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.azriel.server.plist
+
+  Stop:
+    launchctl bootout gui/$UID ~/Library/LaunchAgents/com.azriel.server.plist
+
+  Status:
+    launchctl print gui/$UID/com.azriel.server | head -30
+
+  Logs (rolling):
+    ~/.azriel/logs/server.out (stdout)
+    ~/.azriel/logs/server.err (stderr)
+
+  After loading: don't run `tmux new-session -s server` anymore --
+  launchd owns the process. Use `tail -f ~/.azriel/logs/server.out`
+  for live debugging.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.azriel.server</string>
+
+  <key>WorkingDirectory</key>
+  <string>__USER_HOME__/azriel-arch</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__USER_HOME__/.azriel/.venv/bin/python</string>
+    <string>-m</string>
+    <string>azriel.server</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:__USER_HOME__/.local/bin</string>
+    <key>AZRIEL_HOST</key>
+    <string>0.0.0.0</string>
+    <key>AZRIEL_PORT</key>
+    <string>8080</string>
+    <key>PYTHONPATH</key>
+    <string>__USER_HOME__/azriel-arch</string>
+    <key>HOME</key>
+    <string>__USER_HOME__</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ThrottleInterval</key>
+  <integer>20</integer>
+
+  <key>StandardOutPath</key>
+  <string>__USER_HOME__/.azriel/logs/server.out</string>
+
+  <key>StandardErrorPath</key>
+  <string>__USER_HOME__/.azriel/logs/server.err</string>
+
+  <key>ProcessType</key>
+  <string>Interactive</string>
+</dict>
+</plist>

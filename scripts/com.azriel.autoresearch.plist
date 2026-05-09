@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  autoresearch hourly drain.
+
+  Runs `scripts/60_autoresearch.py next` once an hour. Pulls the next
+  pending topic from the queue, runs Azriel through the autoresearch
+  loop (HTTP to localhost:8080/chat), saves the note + summary, drops
+  a one-line memory entry (source='research') so future chats can
+  surface it.
+
+  When the queue is empty the script no-ops cleanly (prints
+  "(no pending topics)" and exits 0). No work, no waste.
+
+  Resource posture: shares the live com.azriel.server process via
+  /chat. The autoresearch call is a normal /chat HTTP call, no extra
+  GPU allocation. If you're chatting interactively at the moment the
+  cron fires, the autoresearch call gets queued behind your turn --
+  brief slowdown, no error.
+
+  Install (one-time, on a development machine):
+    cp ~/azriel-arch/scripts/com.azriel.autoresearch.plist \
+       ~/Library/LaunchAgents/com.azriel.autoresearch.plist
+    launchctl bootstrap gui/$UID \
+       ~/Library/LaunchAgents/com.azriel.autoresearch.plist
+
+  Stop:
+    launchctl bootout gui/$UID \
+       ~/Library/LaunchAgents/com.azriel.autoresearch.plist
+
+  Status:
+    launchctl print gui/$UID/com.azriel.autoresearch | head -30
+
+  Logs:
+    ~/.azriel/logs/autoresearch-cron.out
+    ~/.azriel/logs/autoresearch-cron.err
+
+  Force a run now (without waiting for the next interval):
+    launchctl kickstart -k gui/$UID/com.azriel.autoresearch
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.azriel.autoresearch</string>
+
+  <key>WorkingDirectory</key>
+  <string>__USER_HOME__/azriel-arch</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__USER_HOME__/.azriel/.venv/bin/python</string>
+    <string>scripts/60_autoresearch.py</string>
+    <string>next</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:__USER_HOME__/.local/bin</string>
+    <key>PYTHONPATH</key>
+    <string>__USER_HOME__/azriel-arch</string>
+    <key>HOME</key>
+    <string>__USER_HOME__</string>
+  </dict>
+
+  <!-- Run every hour. NO RunAtLoad -- first run waits 1h after install
+       so an unexpected install doesn't immediately compete with the
+       user's interactive chat. -->
+  <key>StartInterval</key>
+  <integer>3600</integer>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- ProcessType=Background lowers scheduling priority so interactive
+       chat stays responsive even if a research call is mid-flight. -->
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <key>StandardOutPath</key>
+  <string>__USER_HOME__/.azriel/logs/autoresearch-cron.out</string>
+
+  <key>StandardErrorPath</key>
+  <string>__USER_HOME__/.azriel/logs/autoresearch-cron.err</string>
+</dict>
+</plist>

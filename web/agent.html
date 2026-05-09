@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Azriel · Agent Mode</title>
+    <link rel="icon" type="image/png" href="/static/logo.png" />
+    <script>
+      // Pick up the theme the user selected on the chat page so colors
+      // match across tabs. Runs before <style> parses so no FOUC.
+      try {
+        const t = localStorage.getItem("azriel.theme");
+        if (t) document.documentElement.dataset.theme = t;
+      } catch (_) {}
+    </script>
+    <style>
+      :root[data-theme="dark"] {
+        --bg: #000000;
+        --panel: #0d0d0d;
+        --panel-2: #181818;
+        --border: #2a2a2a;
+        --fg: #ffffff;
+        --muted: #888888;
+        --accent: #ffffff;
+        --accent-bg: #1a1a1a;
+        --user: #1a1a1a;
+        --error: #ff5555;
+      }
+      :root[data-theme="light"] {
+        --bg: #ffffff;
+        --panel: #f7f7f7;
+        --panel-2: #ededed;
+        --border: #d8d8d8;
+        --fg: #000000;
+        --muted: #707070;
+        --accent: #000000;
+        --accent-bg: #f0f0f0;
+        --user: #f0f0f0;
+        --error: #c4302b;
+      }
+      :root[data-theme="sepia"] {
+        --bg: #f1e3c7;
+        --panel: #e6d5b0;
+        --panel-2: #dac39a;
+        --border: #b89e72;
+        --fg: #3b2a18;
+        --muted: #7a624a;
+        --accent: #8a4628;
+        --accent-bg: #d8b990;
+        --user: #d8c9a6;
+        --error: #a23a1f;
+      }
+      :root[data-theme="tabernacle"] {
+        --bg: #f7eed4;
+        --panel: #e9d6a4;
+        --panel-2: #ddc488;
+        --border: #b59345;
+        --fg: #2a1f15;
+        --muted: #786543;
+        --accent: #8b1f1f;
+        --accent-bg: #f3d8c3;
+        --user: #ecd9a9;
+        --error: #6b2727;
+      }
+      :root[data-theme="golgotha"] {
+        --bg: #161514;
+        --panel: #232120;
+        --panel-2: #2c2a28;
+        --border: #3a3633;
+        --fg: #d8d2cb;
+        --muted: #847d75;
+        --accent: #7a1a14;
+        --accent-bg: #2a1311;
+        --user: #2a2826;
+        --error: #c43a2c;
+      }
+      :root[data-theme="eden"] {
+        --bg: #0f1f15;
+        --panel: #1a2c20;
+        --panel-2: #243a2a;
+        --border: #2f4d36;
+        --fg: #e6f0d8;
+        --muted: #8da280;
+        --accent: #d6a850;
+        --accent-bg: #1f3522;
+        --user: #1d2a21;
+        --error: #c66848;
+      }
+      :root[data-theme="sinai"] {
+        --bg: #1c1d20;
+        --panel: #2a2b2f;
+        --panel-2: #34353a;
+        --border: #44464b;
+        --fg: #ecebe6;
+        --muted: #8e8d8a;
+        --accent: #e8662f;
+        --accent-bg: #2c1f17;
+        --user: #25272a;
+        --error: #ce4c2a;
+      }
+      :root[data-theme="throne"] {
+        --bg: #0d1a2e;
+        --panel: #16263e;
+        --panel-2: #1d3050;
+        --border: #2c4366;
+        --fg: #f0e6c4;
+        --muted: #6b89a7;
+        --accent: #2ec985;
+        --accent-bg: #0d2c1e;
+        --user: #182942;
+        --error: #d6543c;
+      }
+      :root[data-theme="bethel"] {
+        --bg: #0a0e2a;
+        --panel: #131a3d;
+        --panel-2: #1d2455;
+        --border: #2c3a73;
+        --fg: #e8e4ff;
+        --muted: #6e7397;
+        --accent: #f3c95d;
+        --accent-bg: #2a210e;
+        --user: #14193f;
+        --error: #d34a4a;
+      }
+      :root[data-theme="pentecost"] {
+        --bg: #1f0f08;
+        --panel: #2c1810;
+        --panel-2: #3b2118;
+        --border: #5a2d1d;
+        --fg: #fde8c2;
+        --muted: #b48766;
+        --accent: #f08720;
+        --accent-bg: #3e1d0c;
+        --user: #2a160c;
+        --error: #b8361b;
+      }
+      :root[data-theme="new-jerusalem"] {
+        --bg: #f7f4ec;
+        --panel: #ece4d2;
+        --panel-2: #e0d6bd;
+        --border: #c9bd9b;
+        --fg: #2b2620;
+        --muted: #897f70;
+        --accent: #c89c4f;
+        --accent-bg: #f4e8c8;
+        --user: #ebe2c6;
+        --error: #993d2c;
+      }
+      :root {
+        /* Aliases so existing agent.html CSS keeps working under any theme. */
+        --text: var(--fg);
+        --err: var(--error);
+        --accent-dim: color-mix(in srgb, var(--accent) 50%, var(--bg));
+        /* Status hues kept theme-independent so badges read consistently. */
+        --ok: #76c893;
+        --warn: #e9b54a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          14px/1.5 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "Inter",
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      header {
+        padding: 18px 28px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+      header .crumb {
+        color: var(--muted);
+      }
+      header .crumb a {
+        font-weight: 500;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 24px 28px 80px;
+        display: grid;
+        gap: 24px;
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px 20px;
+      }
+      section h2 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      textarea,
+      input[type="text"] {
+        width: 100%;
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font: inherit;
+        resize: vertical;
+      }
+      textarea:focus,
+      input:focus {
+        outline: none;
+        border-color: var(--accent-dim);
+      }
+      button {
+        background: var(--accent);
+        color: var(--accent-bg);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        font: inherit;
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      button:disabled {
+        background: var(--border);
+        color: var(--muted);
+        cursor: not-allowed;
+      }
+      button.ghost {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+      .tool-pill {
+        display: inline-block;
+        background: var(--accent-bg);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 2px 10px;
+        margin: 2px 4px 2px 0;
+        font-size: 12px;
+        color: var(--text);
+      }
+      .task {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+        background: var(--bg);
+      }
+      .task.terminal {
+        opacity: 0.78;
+      }
+      .task-head {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .task-goal {
+        font-weight: 500;
+        flex: 1 1 auto;
+        min-width: 200px;
+      }
+      .task-meta {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      .badge {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 4px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .badge.running {
+        background: #1f3a4a;
+        color: #8fc8e0;
+      }
+      .badge.done {
+        background: #1f3a26;
+        color: var(--ok);
+      }
+      .badge.aborted {
+        background: #3a201f;
+        color: var(--err);
+      }
+      .badge.capped {
+        background: #3a311f;
+        color: var(--warn);
+      }
+      .badge.error {
+        background: #3a201f;
+        color: var(--err);
+      }
+      .steps {
+        margin-top: 10px;
+      }
+      .step {
+        border-left: 2px solid var(--border);
+        padding: 6px 0 6px 12px;
+        margin-bottom: 8px;
+      }
+      .step .kind {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 12px;
+        color: var(--accent);
+      }
+      .step .raw {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .step .obs {
+        margin-top: 4px;
+        padding: 8px 10px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .step .err {
+        color: var(--err);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      label.checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      label.checkbox input {
+        accent-color: var(--accent);
+      }
+      .empty {
+        color: var(--muted);
+        font-size: 13px;
+        font-style: italic;
+      }
+      /* Permissions / capabilities grid */
+      .perm-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 10px;
+      }
+      .perm-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .perm-card.unavailable {
+        opacity: 0.55;
+      }
+      .perm-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .perm-card-title {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .perm-card-status {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+      .perm-card-tools {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        line-height: 1.5;
+      }
+      .perm-card-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      /* iOS-ish toggle switch */
+      .perm-switch {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+        flex: none;
+      }
+      .perm-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .perm-switch .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: var(--border);
+        border-radius: 999px;
+        transition: 0.15s;
+      }
+      .perm-switch .slider::before {
+        content: "";
+        position: absolute;
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        top: 3px;
+        background: var(--bg);
+        border-radius: 50%;
+        transition: 0.15s;
+      }
+      .perm-switch input:checked + .slider {
+        background: var(--accent);
+      }
+      .perm-switch input:checked + .slider::before {
+        transform: translateX(16px);
+        background: var(--accent-bg);
+      }
+      .perm-switch input:disabled + .slider {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Azriel · Agent Mode</h1>
+      <div class="crumb"><a href="/">← back to chat</a></div>
+    </header>
+
+    <main>
+      <section>
+        <h2>Start a task</h2>
+        <textarea
+          id="goal"
+          rows="3"
+          placeholder="e.g. Look up John 3:16 and report the verse text."
+        ></textarea>
+        <div class="row">
+          <button id="start">Start Task</button>
+          <label class="checkbox"
+            ><input type="checkbox" id="autostep" checked /> auto-step until
+            terminal</label
+          >
+          <span id="status" class="hint"></span>
+        </div>
+        <div class="hint">
+          Output grammar: <code>STEP: tool_name("arg")</code> ·
+          <code>DONE: …</code> · <code>ABORT: …</code>. Goals matching attack
+          patterns abort at step 0 with no model call.
+        </div>
+      </section>
+
+      <section>
+        <h2>Permissions — what the agent can and can't do</h2>
+        <div class="hint" style="margin-bottom: 10px">
+          Toggle a category off to hide its tools from the planner for new
+          tasks. Settings persist locally; they don't affect the chat page or
+          other users.
+        </div>
+        <div id="permissions-grid" class="perm-grid"></div>
+      </section>
+
+      <section>
+        <h2>Active</h2>
+        <div id="active-list"><div class="empty">No active tasks.</div></div>
+      </section>
+
+      <section>
+        <h2>Recent</h2>
+        <div id="history-list">
+          <div class="empty">No completed tasks yet.</div>
+        </div>
+        <div class="row">
+          <button class="ghost" id="refresh">Refresh</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const $ = (s) => document.querySelector(s);
+      const setStatus = (msg, kind = "") => {
+        const el = $("#status");
+        el.textContent = msg || "";
+        el.style.color = kind === "err" ? "var(--err)" : "var(--muted)";
+      };
+
+      async function api(path, opts = {}) {
+        const init = {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          ...opts,
+        };
+        const r = await fetch(path, init);
+        if (r.status === 401) {
+          setStatus("Not authenticated. Reload to login.", "err");
+          throw new Error("401");
+        }
+        if (!r.ok) {
+          const t = await r.text().catch(() => "");
+          throw new Error(`${r.status} ${t.slice(0, 200)}`);
+        }
+        return r.json();
+      }
+
+      function renderStep(s) {
+        const div = document.createElement("div");
+        div.className = "step";
+        const kind = document.createElement("div");
+        kind.className = "kind";
+        kind.textContent =
+          `${s.step_no}. ${s.kind}` + (s.tool_name ? ` · ${s.tool_name}` : "");
+        div.appendChild(kind);
+        const raw = document.createElement("div");
+        raw.className = "raw";
+        raw.textContent = s.raw || "";
+        div.appendChild(raw);
+        if (s.observation) {
+          const obs = document.createElement("div");
+          obs.className = "obs";
+          obs.textContent = s.observation;
+          div.appendChild(obs);
+        }
+        if (s.error) {
+          const err = document.createElement("div");
+          err.className = "err";
+          err.textContent = `error: ${s.error}`;
+          div.appendChild(err);
+        }
+        // Friendly explainer for the most common
+        // failure mode: PARSE_FAIL on a goal that needs a tool the
+        // agent doesn't have (e.g. "open a new tab in Chrome" -- there
+        // is no browser-control tool). Shows the user what IS possible
+        // so they don't think the agent is broken.
+        if (s.kind === "PARSE_FAIL") {
+          const hint = document.createElement("div");
+          hint.className = "obs";
+          hint.style.borderColor = "var(--accent-dim)";
+          hint.textContent =
+            "This usually means the goal needs a capability the agent " +
+            "doesn't have right now -- e.g. running shell commands, " +
+            "opening a browser tab, or sending email. Check the " +
+            "Permissions panel above for what IS available, and try " +
+            "rephrasing the goal around those tools (Scripture, web " +
+            "search, file operations in the sandbox, document creation).";
+          div.appendChild(hint);
+        }
+        return div;
+      }
+
+      function renderTask(t, opts = {}) {
+        const wrap = document.createElement("div");
+        wrap.className = "task" + (t.status !== "running" ? " terminal" : "");
+        wrap.dataset.taskId = t.task_id;
+
+        const head = document.createElement("div");
+        head.className = "task-head";
+        const goal = document.createElement("div");
+        goal.className = "task-goal";
+        goal.textContent = t.goal;
+        const badge = document.createElement("span");
+        badge.className = `badge ${t.status}`;
+        badge.textContent = t.status;
+        goal.appendChild(badge);
+        const meta = document.createElement("div");
+        meta.className = "task-meta";
+        meta.textContent = `${t.task_id} · ${t.steps.length}/10 steps`;
+        head.appendChild(goal);
+        head.appendChild(meta);
+        wrap.appendChild(head);
+
+        const steps = document.createElement("div");
+        steps.className = "steps";
+        t.steps.forEach((s) => steps.appendChild(renderStep(s)));
+        wrap.appendChild(steps);
+
+        if (t.last_reason) {
+          const reason = document.createElement("div");
+          reason.className = "hint";
+          reason.style.marginTop = "6px";
+          reason.textContent = `→ ${t.last_reason}`;
+          wrap.appendChild(reason);
+        }
+
+        if (t.status === "running") {
+          const actions = document.createElement("div");
+          actions.className = "task-actions";
+          const stepBtn = document.createElement("button");
+          stepBtn.textContent = "Step";
+          stepBtn.onclick = async () => {
+            stepBtn.disabled = true;
+            stepBtn.textContent = "Stepping…";
+            try {
+              await stepOnce(t.task_id);
+              await refreshTasks();
+            } catch (e) {
+              setStatus(e.message, "err");
+            }
+          };
+          actions.appendChild(stepBtn);
+          wrap.appendChild(actions);
+        }
+        return wrap;
+      }
+
+      async function stepOnce(taskId) {
+        return api("/agent/step", {
+          method: "POST",
+          body: JSON.stringify({ task_id: taskId }),
+        });
+      }
+
+      async function autoStep(taskId, max = 10) {
+        let n = 0;
+        while (n < max) {
+          const t = await stepOnce(taskId);
+          await refreshTasks();
+          if (t.status !== "running") return t;
+          n++;
+          await new Promise((r) => setTimeout(r, 250));
+        }
+        return null;
+      }
+
+      async function refreshTasks() {
+        const list = await api("/agent/list");
+        const active = list.filter((t) => t.status === "running");
+        const history = list.filter((t) => t.status !== "running");
+
+        const a = $("#active-list");
+        const h = $("#history-list");
+        a.innerHTML = "";
+        h.innerHTML = "";
+        if (active.length === 0) {
+          a.innerHTML = '<div class="empty">No active tasks.</div>';
+        } else {
+          active.forEach((t) => a.appendChild(renderTask(t)));
+        }
+        if (history.length === 0) {
+          h.innerHTML = '<div class="empty">No completed tasks yet.</div>';
+        } else {
+          history.slice(0, 20).forEach((t) => h.appendChild(renderTask(t)));
+        }
+      }
+
+      // Agent permissions panel.
+      // Each category bundles 1+ tools into a user-meaningful capability
+      // and renders as a single toggle. Future capabilities (terminal,
+      // browser) are listed but unavailable so users can see the
+      // direction without expecting them to work today.
+      const CAPABILITIES = [
+        {
+          id: "scripture",
+          title: "Scripture & theology",
+          desc: "Look up verses, cross-references, Strong's lexicon, public-domain commentary, and run a doctrinal classifier.",
+          tools: [
+            "bible_lookup",
+            "crossref_lookup",
+            "strongs_lookup",
+            "commentary_lookup",
+            "doctrinal_check",
+          ],
+        },
+        {
+          id: "memory",
+          title: "Memory & past chats",
+          desc: "Search Azriel's persistent notes and prior conversations; save new facts.",
+          tools: ["memory_search", "memory_insert", "conversation_search"],
+        },
+        {
+          id: "web",
+          title: "Web search & fetch",
+          desc: "Public-web search via DuckDuckGo, fetch a URL's text, image search.",
+          tools: ["web_search", "web_fetch", "image_search"],
+        },
+        {
+          id: "files",
+          title: "Files (sandboxed)",
+          desc: "Read / write / list files inside the ~/azriel-files sandbox; extract text from PDFs; describe images.",
+          tools: [
+            "fs_list",
+            "fs_read",
+            "fs_write",
+            "pdf_extract",
+            "image_describe",
+          ],
+        },
+        {
+          id: "create",
+          title: "Document creation",
+          desc: "Generate docx / pptx / xlsx / pdf into the sandbox; render inline charts and diagrams.",
+          tools: ["document_create", "pdf_create", "visualize"],
+        },
+        {
+          id: "utility",
+          title: "Utility",
+          desc: "Weather, skill proposal at the end of a useful workflow.",
+          tools: ["weather", "propose_skill"],
+        },
+        {
+          id: "terminal",
+          title: "Run terminal commands",
+          desc: "Execute shell commands on this machine. Not implemented yet — would require a sandbox + per-command confirmation flow.",
+          tools: [],
+          unavailable: true,
+        },
+        {
+          id: "browser",
+          title: "Browser automation",
+          desc: "Open tabs, click, type into web pages. Not implemented yet — would need Playwright (or similar) and a permissions UX.",
+          tools: [],
+          unavailable: true,
+        },
+        {
+          id: "email",
+          title: "Send email",
+          desc: "Compose and send mail on your behalf. Not implemented yet — would need an outbound provider and per-message confirmation.",
+          tools: [],
+          unavailable: true,
+        },
+      ];
+
+      function loadPerms() {
+        const stored = localStorage.getItem("azriel.agent_perms");
+        if (!stored) return null;
+        try {
+          return JSON.parse(stored);
+        } catch (_) {
+          return null;
+        }
+      }
+      function savePerms(perms) {
+        localStorage.setItem("azriel.agent_perms", JSON.stringify(perms));
+      }
+      // Default: all available categories ON, all unavailable categories OFF.
+      function defaultPerms() {
+        const p = {};
+        for (const c of CAPABILITIES) p[c.id] = !c.unavailable;
+        return p;
+      }
+      const perms = Object.assign(defaultPerms(), loadPerms() || {});
+
+      // Compute the allowed_tools whitelist from current perms +
+      // server-known tools. Server-side acts as the authority on
+      // whether a tool actually exists; we only forward the names of
+      // tools whose category is enabled AND that the server reports.
+      let SERVER_TOOLS = []; // populated on first /tools fetch
+      function allowedToolsForCurrentPerms() {
+        const allowed = new Set();
+        for (const c of CAPABILITIES) {
+          if (!perms[c.id] || c.unavailable) continue;
+          for (const t of c.tools) allowed.add(t);
+        }
+        // Intersect with what the server actually has registered.
+        return SERVER_TOOLS.filter((name) => allowed.has(name));
+      }
+
+      function renderPerms() {
+        const grid = $("#permissions-grid");
+        grid.innerHTML = "";
+        for (const c of CAPABILITIES) {
+          const card = document.createElement("div");
+          card.className = "perm-card" + (c.unavailable ? " unavailable" : "");
+          const head = document.createElement("div");
+          head.className = "perm-card-head";
+          const title = document.createElement("div");
+          title.className = "perm-card-title";
+          title.textContent = c.title;
+          head.appendChild(title);
+          // Toggle switch
+          const sw = document.createElement("label");
+          sw.className = "perm-switch";
+          const inp = document.createElement("input");
+          inp.type = "checkbox";
+          inp.checked = !!perms[c.id];
+          inp.disabled = !!c.unavailable;
+          inp.onchange = () => {
+            perms[c.id] = inp.checked;
+            savePerms(perms);
+            renderPerms(); // refresh the active-tools sub-line on cards
+          };
+          const slider = document.createElement("span");
+          slider.className = "slider";
+          sw.appendChild(inp);
+          sw.appendChild(slider);
+          head.appendChild(sw);
+          card.appendChild(head);
+          // Status line
+          const status = document.createElement("div");
+          status.className = "perm-card-status";
+          if (c.unavailable) {
+            status.textContent = "coming soon — not available";
+          } else if (!perms[c.id]) {
+            status.textContent = "off";
+          } else {
+            // Show how many of the category's tools the server has registered.
+            const have = c.tools.filter((t) => SERVER_TOOLS.includes(t)).length;
+            status.textContent = `on · ${have}/${c.tools.length} tools registered`;
+          }
+          card.appendChild(status);
+          // Description
+          const desc = document.createElement("div");
+          desc.className = "perm-card-desc";
+          desc.textContent = c.desc;
+          card.appendChild(desc);
+          // Tool list (mono)
+          if (c.tools.length) {
+            const list = document.createElement("div");
+            list.className = "perm-card-tools";
+            list.textContent = c.tools.join(" · ");
+            card.appendChild(list);
+          }
+          grid.appendChild(card);
+        }
+      }
+
+      async function loadTools() {
+        try {
+          const tools = await api("/tools");
+          SERVER_TOOLS = tools.map((t) => t.name);
+        } catch (_) {
+          SERVER_TOOLS = [];
+        }
+        renderPerms();
+      }
+
+      $("#start").onclick = async () => {
+        const goal = $("#goal").value.trim();
+        if (!goal) {
+          setStatus("Goal is empty.", "err");
+          return;
+        }
+        const allowed = allowedToolsForCurrentPerms();
+        if (allowed.length === 0) {
+          setStatus(
+            "No capabilities are enabled. Turn on at least one category above.",
+            "err",
+          );
+          return;
+        }
+        $("#start").disabled = true;
+        setStatus("Starting task…");
+        try {
+          const t = await api("/agent/start", {
+            method: "POST",
+            body: JSON.stringify({
+              goal,
+              session_id: "agent-ui",
+              allowed_tools: allowed,
+            }),
+          });
+          $("#goal").value = "";
+          await refreshTasks();
+          setStatus(`Task ${t.task_id} created (status: ${t.status}).`);
+          if (t.status === "running" && $("#autostep").checked) {
+            setStatus(`Auto-stepping ${t.task_id}…`);
+            await autoStep(t.task_id);
+            setStatus(`Done.`);
+          }
+        } catch (e) {
+          setStatus(e.message, "err");
+        } finally {
+          $("#start").disabled = false;
+        }
+      };
+
+      $("#refresh").onclick = refreshTasks;
+
+      // If the user picks a new theme on the chat tab, this tab follows.
+      window.addEventListener("storage", (e) => {
+        if (e.key === "azriel.theme" && e.newValue) {
+          document.documentElement.dataset.theme = e.newValue;
+        }
+      });
+
+      loadTools();
+      refreshTasks();
+      // Light polling so externally-driven tasks (e.g. curl) show up.
+      setInterval(refreshTasks, 8000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+checkpoints/
+*.safetensors
+
+# Connector credentials -- never committed. Belt-and-suspenders: the
+# real secrets live at ~/.azriel-secrets/ outside the repo, but if a
+# fork ever copies that dir in by accident, this still blocks it.
+.azriel-secrets/
+**/.azriel-secrets/
+*.token
+*.pat
+secrets/

@@ -1,0 +1,5583 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Azriel</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/png" href="/static/logo.png" />
+    <style>
+      :root[data-theme="dark"] {
+        /* Pure greyscale: black bg, white fg, white accent. */
+        --bg: #000000;
+        --panel: #0d0d0d;
+        --panel-2: #181818;
+        --border: #2a2a2a;
+        --fg: #ffffff;
+        --muted: #888888;
+        --accent: #ffffff;
+        --accent-bg: #1a1a1a;
+        --user: #1a1a1a;
+        --error: #ff5555;
+      }
+      :root[data-theme="light"] {
+        /* Pure greyscale: white bg, black fg, black accent. */
+        --bg: #ffffff;
+        --panel: #f7f7f7;
+        --panel-2: #ededed;
+        --border: #d8d8d8;
+        --fg: #000000;
+        --muted: #707070;
+        --accent: #000000;
+        --accent-bg: #f0f0f0;
+        --user: #f0f0f0;
+        --error: #c4302b;
+      }
+      :root[data-theme="sepia"] {
+        --bg: #f1e3c7;
+        --panel: #e6d5b0;
+        --panel-2: #dac39a;
+        --border: #b89e72;
+        --fg: #3b2a18;
+        --muted: #7a624a;
+        --accent: #8a4628;
+        --accent-bg: #d8b990;
+        --user: #d8c9a6;
+        --error: #a23a1f;
+      }
+      :root[data-theme="tabernacle"] {
+        /* Exod 26: gold, blue, purple, scarlet, fine linen, acacia wood */
+        --bg: #f7eed4;
+        --panel: #e9d6a4;
+        --panel-2: #ddc488;
+        --border: #b59345;
+        --fg: #2a1f15;
+        --muted: #786543;
+        --accent: #8b1f1f;
+        --accent-bg: #f3d8c3;
+        --user: #ecd9a9;
+        --error: #6b2727;
+      }
+      :root[data-theme="golgotha"] {
+        /* Mark 15:33 -- darkness over the land; bone, charcoal, dried blood */
+        --bg: #161514;
+        --panel: #232120;
+        --panel-2: #2c2a28;
+        --border: #3a3633;
+        --fg: #d8d2cb;
+        --muted: #847d75;
+        --accent: #7a1a14;
+        --accent-bg: #2a1311;
+        --user: #2a2826;
+        --error: #c43a2c;
+      }
+      :root[data-theme="eden"] {
+        /* Gen 2:8-15 -- garden, river Pishon, gold of Havilah */
+        --bg: #0f1f15;
+        --panel: #1a2c20;
+        --panel-2: #243a2a;
+        --border: #2f4d36;
+        --fg: #e6f0d8;
+        --muted: #8da280;
+        --accent: #d6a850;
+        --accent-bg: #1f3522;
+        --user: #1d2a21;
+        --error: #c66848;
+      }
+      :root[data-theme="sinai"] {
+        /* Exod 19:18 -- granite, smoke, lightning, devouring fire */
+        --bg: #1c1d20;
+        --panel: #2a2b2f;
+        --panel-2: #34353a;
+        --border: #44464b;
+        --fg: #ecebe6;
+        --muted: #8e8d8a;
+        --accent: #e8662f;
+        --accent-bg: #2c1f17;
+        --user: #25272a;
+        --error: #ce4c2a;
+      }
+      :root[data-theme="throne"] {
+        /* Rev 4 -- sapphire, jasper, sardius, emerald rainbow round the throne */
+        --bg: #0d1a2e;
+        --panel: #16263e;
+        --panel-2: #1d3050;
+        --border: #2c4366;
+        --fg: #f0e6c4;
+        --muted: #6b89a7;
+        --accent: #2ec985;
+        --accent-bg: #0d2c1e;
+        --user: #182942;
+        --error: #d6543c;
+      }
+      :root[data-theme="bethel"] {
+        /* Gen 28:12 -- Jacob's ladder, night sky, gold ladder, starlight */
+        --bg: #0a0e2a;
+        --panel: #131a3d;
+        --panel-2: #1d2455;
+        --border: #2c3a73;
+        --fg: #e8e4ff;
+        --muted: #6e7397;
+        --accent: #f3c95d;
+        --accent-bg: #2a210e;
+        --user: #14193f;
+        --error: #d34a4a;
+      }
+      :root[data-theme="pentecost"] {
+        /* Acts 2:3-4 -- divided tongues as of fire. Azriel's pick. */
+        --bg: #1f0f08;
+        --panel: #2c1810;
+        --panel-2: #3b2118;
+        --border: #5a2d1d;
+        --fg: #fde8c2;
+        --muted: #b48766;
+        --accent: #f08720;
+        --accent-bg: #3e1d0c;
+        --user: #2a160c;
+        --error: #b8361b;
+      }
+      :root[data-theme="new-jerusalem"] {
+        /* Rev 21 -- pure light, alabaster, jasper walls, streets of gold */
+        --bg: #f7f4ec;
+        --panel: #ece4d2;
+        --panel-2: #e0d6bd;
+        --border: #c9bd9b;
+        --fg: #2b2620;
+        --muted: #897f70;
+        --accent: #c89c4f;
+        --accent-bg: #f4e8c8;
+        --user: #ebe2c6;
+        --error: #993d2c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        font:
+          15px/1.6 -apple-system,
+          "SF Pro Text",
+          system-ui,
+          "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* HEADER */
+      header.top {
+        height: 52px;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--border);
+        gap: 12px;
+      }
+      .icon-btn {
+        background: transparent;
+        border: 0;
+        color: var(--fg);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 6px;
+        line-height: 0;
+      }
+      .icon-btn:hover {
+        background: var(--panel);
+      }
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      header.top h1 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        flex: 1;
+        text-align: center;
+        letter-spacing: 0.01em;
+      }
+      header.top .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--panel);
+      }
+      header.top .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #6cba63;
+      }
+      header.top .dot.loading {
+        background: #d2a247;
+      }
+      header.top .dot.dead {
+        background: var(--error);
+      }
+
+      /* MAIN */
+      main {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        position: relative;
+      }
+
+      /* Per-route ambient backgrounds. Hidden by default; activated by JS. */
+      .route-bg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .route-bg.active {
+        opacity: 1;
+      }
+
+      /* Learn -- parallax stars (Psalm 19:1). Lighter than reference: 3 layers, fewer particles, accent-tinted. */
+      .bg-stars {
+        background: radial-gradient(
+          ellipse at bottom,
+          color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+          transparent 70%
+        );
+      }
+      .bg-stars i {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        background: transparent;
+        animation: starscroll 90s linear infinite;
+      }
+      .bg-stars i:nth-child(1) {
+        box-shadow:
+          120px 200px 0 0 var(--fg),
+          340px 80px 0 0 var(--fg),
+          580px 420px 0 0 var(--fg),
+          800px 180px 0 0 var(--fg),
+          1020px 540px 0 0 var(--fg),
+          1260px 320px 0 0 var(--fg),
+          150px 700px 0 0 var(--fg),
+          460px 880px 0 0 var(--fg),
+          720px 660px 0 0 var(--fg),
+          980px 820px 0 0 var(--fg),
+          1180px 720px 0 0 var(--fg),
+          250px 1100px 0 0 var(--fg),
+          560px 1280px 0 0 var(--fg),
+          820px 1040px 0 0 var(--fg),
+          1080px 1180px 0 0 var(--fg),
+          1340px 1300px 0 0 var(--fg),
+          80px 1480px 0 0 var(--fg),
+          380px 1620px 0 0 var(--fg),
+          640px 1440px 0 0 var(--fg),
+          920px 1560px 0 0 var(--fg),
+          1220px 1500px 0 0 var(--fg),
+          200px 1840px 0 0 var(--fg),
+          480px 1900px 0 0 var(--fg),
+          760px 1860px 0 0 var(--fg),
+          1040px 1980px 0 0 var(--fg),
+          1300px 1820px 0 0 var(--fg);
+        opacity: 0.35;
+      }
+      .bg-stars i:nth-child(2) {
+        width: 2px;
+        height: 2px;
+        animation-duration: 140s;
+        box-shadow:
+          200px 320px 0 0 var(--accent),
+          540px 160px 0 0 var(--accent),
+          860px 480px 0 0 var(--accent),
+          1140px 280px 0 0 var(--accent),
+          320px 760px 0 0 var(--accent),
+          640px 940px 0 0 var(--accent),
+          980px 720px 0 0 var(--accent),
+          1240px 880px 0 0 var(--accent),
+          180px 1240px 0 0 var(--accent),
+          500px 1380px 0 0 var(--accent),
+          800px 1180px 0 0 var(--accent),
+          1080px 1340px 0 0 var(--accent),
+          340px 1640px 0 0 var(--accent),
+          660px 1780px 0 0 var(--accent),
+          940px 1700px 0 0 var(--accent),
+          1240px 1900px 0 0 var(--accent);
+        opacity: 0.55;
+      }
+      .bg-stars i:nth-child(3) {
+        width: 3px;
+        height: 3px;
+        animation-duration: 220s;
+        box-shadow:
+          280px 240px 0 0 var(--accent),
+          720px 580px 0 0 var(--accent),
+          1160px 360px 0 0 var(--accent),
+          440px 980px 0 0 var(--accent),
+          880px 1100px 0 0 var(--accent),
+          1300px 820px 0 0 var(--accent),
+          240px 1500px 0 0 var(--accent),
+          660px 1740px 0 0 var(--accent),
+          1020px 1560px 0 0 var(--accent);
+        opacity: 0.7;
+      }
+      @keyframes starscroll {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-2000px);
+        }
+      }
+
+      /* Faith 101 -- ray-marched volumetric prism. Theme-aware: gradient
+         texture rebuilt from a 12-stop ladder of theme shades on every
+         data-theme change. Liquid feel comes from the bend-angle
+         distortion (uDistort=1.4) + slow speed (uSpeed=0.22). Lower
+         opacity keeps it behind the route content as ambient texture. */
+      .bg-burst {
+        background: transparent;
+      }
+      .bg-burst canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        mix-blend-mode: lighten;
+        opacity: 0.42;
+      }
+      [data-theme="light"] .bg-burst canvas,
+      [data-theme="parchment"] .bg-burst canvas {
+        mix-blend-mode: multiply;
+        opacity: 0.32;
+      }
+
+      /* Prayer -- WebGL light rays (cinematic from above). John 1:5: the
+         light shines in the darkness. Theme-aware (reads --accent live;
+         retints on theme switch). Replaces the earlier incense-particle bg. */
+      .bg-rays {
+        background: transparent;
+      }
+      .bg-rays canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0.85;
+      }
+
+      /* Project -- canvas2d animated squares grid, slow diagonal drift +
+         hover highlight. Theme-aware: stroke = --border, hover = --accent-bg. */
+      .bg-squares {
+        background: transparent;
+      }
+      .bg-squares canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: auto;
+      }
+      /* (legacy gridshift kept below in case anything still references it) */
+      @keyframes gridshift {
+        from {
+          background-position:
+            0 0,
+            0 0;
+        }
+        to {
+          background-position:
+            48px 48px,
+            48px 48px;
+        }
+      }
+
+      .chat-col {
+        width: 100%;
+        max-width: 720px;
+        padding: 24px 24px 120px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .empty {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 14vh;
+      }
+      .empty h2 {
+        font-size: 36px;
+        font-weight: 500;
+        color: var(--fg);
+        margin: 0;
+        letter-spacing: 0.01em;
+      }
+      #chat-greeting {
+        cursor: pointer;
+        user-select: none;
+        transition:
+          color 0.15s ease,
+          text-shadow 0.15s ease;
+      }
+      #chat-greeting:hover {
+        color: var(--accent);
+      }
+      .greeting-card {
+        margin: 8px auto 0;
+        max-width: 380px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        text-align: left;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+      }
+      .greeting-card .gc-head {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .greeting-card .gc-word {
+        color: var(--fg);
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .greeting-card .gc-lang {
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .greeting-card .gc-def {
+        color: var(--fg);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .greeting-card .gc-ref {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 6px;
+        font-style: italic;
+      }
+      .greeting-card .gc-actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .greeting-card button {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .greeting-card button:hover {
+        filter: brightness(1.05);
+      }
+      .empty .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+      .empty .suggestions button {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: var(--fg);
+        padding: 8px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .empty .suggestions button:hover {
+        background: var(--panel-2);
+        border-color: var(--accent);
+      }
+      .empty .kicker {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        opacity: 0.85;
+        margin-bottom: -6px;
+      }
+      .empty .sub {
+        font-size: 14px;
+        max-width: 480px;
+        color: var(--muted);
+        margin-top: -8px;
+      }
+      .empty .continue {
+        margin-top: 16px;
+        width: 100%;
+        max-width: 520px;
+        text-align: left;
+      }
+      .empty .continue h4 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      .empty .continue .item {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel);
+        cursor: pointer;
+        margin-bottom: 4px;
+        font-size: 13px;
+        color: var(--fg);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .empty .continue .item:hover {
+        border-color: var(--accent);
+        background: var(--panel-2);
+      }
+      .empty .continue .item .preview {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .empty .continue .item time {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .empty .continue .empty-note {
+        color: var(--muted);
+        font-size: 12px;
+        padding: 6px 0;
+      }
+      /* Faith 101 quiz */
+      .quiz-launch {
+        margin-top: 8px;
+      }
+      .quiz-cta {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        padding: 10px 20px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .quiz-cta:hover {
+        filter: brightness(1.1);
+      }
+      .quiz {
+        width: 100%;
+        max-width: 560px;
+        margin: 8px auto 0;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .quiz .q {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .quiz .q .topic {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .quiz .q .qtext {
+        font-size: 14px;
+        color: var(--fg);
+        margin-bottom: 8px;
+      }
+      .quiz .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .quiz .choices label {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--fg);
+      }
+      .quiz .choices label:hover {
+        border-color: var(--accent);
+      }
+      .quiz .choices label input {
+        margin-top: 3px;
+      }
+      .quiz .choices label.correct {
+        border-color: #6cba63;
+        background: color-mix(in srgb, #6cba63 12%, transparent);
+      }
+      .quiz .choices label.wrong {
+        border-color: var(--error);
+        background: color-mix(in srgb, var(--error) 12%, transparent);
+      }
+      .quiz .choices label.chosen {
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+      }
+      .quiz .why {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        padding-left: 4px;
+      }
+      .quiz .submit-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .quiz .submit-row button {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .quiz .submit-row button.secondary {
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .quiz .score {
+        text-align: center;
+        font-size: 18px;
+        padding: 10px;
+        background: var(--accent-bg);
+        border-radius: 8px;
+        color: var(--fg);
+      }
+      .quiz .score strong {
+        color: var(--accent);
+      }
+      /* Make sure landings sit above the route bgs */
+      .landing {
+        position: relative;
+        z-index: 1;
+      }
+      #chat {
+        position: relative;
+        z-index: 1;
+      }
+
+      .msg {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .msg.user {
+        align-items: flex-end;
+      }
+      .msg.user .bubble {
+        background: var(--user);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px 14px;
+        max-width: 85%;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      .msg.azriel {
+        align-items: flex-start;
+      }
+      .msg.azriel .bubble {
+        padding: 4px 0;
+        max-width: 100%;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      .msg .meta {
+        color: var(--muted);
+        font-size: 11px;
+        padding: 0 4px;
+      }
+      .msg .calls {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .msg .calls details {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 12px;
+        margin-top: 4px;
+      }
+      .msg .calls summary {
+        cursor: pointer;
+        color: var(--accent);
+        list-style: none;
+      }
+      .msg .calls summary::-webkit-details-marker {
+        display: none;
+      }
+      .msg .calls summary::before {
+        content: "▸ ";
+      }
+      .msg .calls details[open] summary::before {
+        content: "▾ ";
+      }
+      .msg .calls pre {
+        margin: 6px 0 0;
+        font-size: 11px;
+        white-space: pre-wrap;
+        color: var(--fg);
+      }
+      .msg .thinking-details {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        background: color-mix(in srgb, var(--accent) 4%, var(--panel));
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        padding: 6px 12px;
+      }
+      .msg .thinking-details summary {
+        cursor: pointer;
+        color: var(--muted);
+        font-style: italic;
+        list-style: none;
+      }
+      .msg .thinking-details summary::-webkit-details-marker {
+        display: none;
+      }
+      .msg .thinking-details summary::before {
+        content: "🜂 ";
+      }
+      .msg .thinking-details[open] summary::before {
+        content: "🜂 ";
+      }
+      .msg .thinking-pre {
+        margin: 6px 0 0;
+        font-size: 11px;
+        white-space: pre-wrap;
+        color: var(--fg);
+        opacity: 0.85;
+        border-left: 2px solid var(--border);
+        padding-left: 8px;
+      }
+      .msg .save {
+        align-self: flex-start;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 3px 10px;
+        cursor: pointer;
+        font-size: 11px;
+        margin-top: 6px;
+      }
+      .msg .save:hover {
+        color: var(--fg);
+        border-color: var(--accent);
+      }
+      .skill-proposal {
+        margin-top: 12px;
+        padding: 14px 16px;
+        background: rgba(216, 180, 108, 0.06);
+        border: 1px solid rgba(216, 180, 108, 0.4);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .skill-proposal-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .skill-proposal-icon {
+        color: var(--accent);
+        font-size: 18px;
+        line-height: 1;
+      }
+      .skill-proposal-title {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .skill-proposal-sub {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .skill-proposal-kickoff {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-size: 12px;
+        color: var(--fg);
+        white-space: pre-wrap;
+        max-height: 120px;
+        overflow: auto;
+        font-family: inherit;
+        margin: 0;
+      }
+      .skill-proposal-meta {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      .skill-proposal-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .skill-proposal-save {
+        background: var(--accent);
+        color: #1a1812;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font: inherit;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .skill-proposal-save:hover {
+        filter: brightness(1.05);
+      }
+      .skill-proposal-save:disabled {
+        opacity: 0.65;
+        cursor: default;
+      }
+      .skill-proposal-dismiss {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px 12px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .skill-proposal-dismiss:hover {
+        color: var(--fg);
+        border-color: var(--accent);
+      }
+      .msg .vizwrap {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .msg .vizbox {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        overflow: auto;
+        color: var(--fg);
+      }
+      .msg .vizbox svg {
+        max-width: 100%;
+        height: auto;
+        color: var(--accent);
+      }
+      .msg .vizbox table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .msg .vizbox td,
+      .msg .vizbox th {
+        padding: 6px 8px;
+        border: 1px solid var(--border);
+      }
+      .msg.error .bubble {
+        color: var(--error);
+        border: 1px solid var(--error);
+        border-radius: 14px;
+        padding: 10px 14px;
+      }
+
+      /* THINKING ANIMATION -- flame (Acts 2:3 / John 1:5) + bouncing dots */
+      .thinking {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .thinking .flame {
+        width: 18px;
+        height: 22px;
+        flex-shrink: 0;
+        transform-origin: bottom center;
+        filter: drop-shadow(0 0 4px var(--accent));
+        animation: flicker 1.2s ease-in-out infinite;
+      }
+      .thinking .flame .core {
+        fill: var(--accent);
+        animation: flame-bright 0.6s ease-in-out infinite alternate;
+        transform-origin: bottom center;
+      }
+      .thinking .flame .glow {
+        fill: var(--accent);
+        opacity: 0.35;
+        transform-origin: bottom center;
+        animation: flame-glow 0.9s ease-in-out infinite alternate;
+      }
+      @keyframes flicker {
+        0%,
+        100% {
+          transform: translateX(0) scale(1);
+        }
+        25% {
+          transform: translateX(-0.6px) scale(1.02, 1);
+        }
+        50% {
+          transform: translateX(0.4px) scale(0.98, 1.05);
+        }
+        75% {
+          transform: translateX(-0.3px) scale(1.01, 0.98);
+        }
+      }
+      @keyframes flame-bright {
+        0% {
+          transform: scaleY(1) scaleX(1);
+          opacity: 0.95;
+        }
+        100% {
+          transform: scaleY(1.08) scaleX(0.94);
+          opacity: 1;
+        }
+      }
+      @keyframes flame-glow {
+        0% {
+          transform: scale(1);
+          opacity: 0.25;
+        }
+        100% {
+          transform: scale(1.15);
+          opacity: 0.5;
+        }
+      }
+      .thinking .dots {
+        display: inline-flex;
+        align-items: flex-end;
+        height: 14px;
+        gap: 3px;
+      }
+      .thinking .dots i {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--muted);
+        display: inline-block;
+        animation: bounce 1.1s ease-in-out infinite;
+      }
+      .thinking .dots i:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .thinking .dots i:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.35;
+        }
+        40% {
+          transform: translateY(-4px);
+          opacity: 1;
+        }
+      }
+
+      /* COMPOSE */
+      .compose-wrap {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: center;
+        padding: 12px 24px 18px;
+        background: linear-gradient(to top, var(--bg) 70%, transparent);
+        position: sticky;
+        bottom: 0;
+      }
+      .compose {
+        width: 100%;
+        max-width: 720px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 8px 8px 8px 14px;
+      }
+      .compose:focus-within {
+        border-color: var(--accent);
+      }
+      .compose textarea {
+        flex: 1;
+        background: transparent;
+        color: var(--fg);
+        border: 0;
+        resize: none;
+        font: inherit;
+        min-height: 28px;
+        max-height: 200px;
+        outline: none;
+        padding: 6px 0;
+      }
+      .compose textarea::placeholder {
+        color: var(--muted);
+      }
+      .compose .send {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .compose .send:disabled {
+        background: var(--border);
+        cursor: wait;
+      }
+      .compose .send svg {
+        width: 18px;
+        height: 18px;
+      }
+      .compose .upload {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition:
+          color 0.15s ease,
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+      .compose .upload:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .compose .upload:disabled {
+        opacity: 0.4;
+        cursor: wait;
+      }
+      .compose .upload svg {
+        width: 18px;
+        height: 18px;
+      }
+      .upload-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+        border: 1px solid var(--accent);
+        color: var(--fg);
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin: 6px 0;
+      }
+      .upload-pill .x {
+        cursor: pointer;
+        opacity: 0.7;
+      }
+      .upload-pill .x:hover {
+        opacity: 1;
+      }
+      .compose {
+        position: relative;
+      }
+      .compose-menu {
+        position: fixed;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 260px;
+        max-width: 360px;
+        max-height: 60vh;
+        overflow: hidden;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+      }
+      .compose-menu .menu-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+      .compose-menu .menu-head button {
+        background: transparent;
+        border: 0;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .compose-menu .menu-head button:hover {
+        color: var(--fg);
+      }
+      .compose-menu .menu-search {
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font: inherit;
+        font-size: 13px;
+        margin: 4px 4px 6px;
+        outline: none;
+      }
+      .compose-menu .menu-search:focus {
+        border-color: var(--accent);
+      }
+      .compose-menu .menu-list {
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .compose-menu button.menu-item {
+        text-align: left;
+        background: transparent;
+        border: 0;
+        color: var(--fg);
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .compose-menu button.menu-item:hover {
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+      }
+      .compose-menu .menu-item .glyph {
+        width: 18px;
+        text-align: center;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .compose-menu .menu-item .meta {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .compose-menu .menu-empty {
+        padding: 10px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      /* DRAWER (left nav) */
+      .scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+        z-index: 90;
+      }
+      body.drawer-open .scrim,
+      body.profile-open .scrim {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        background: var(--panel);
+        border-right: 1px solid var(--border);
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      body.drawer-open .drawer {
+        transform: translateX(0);
+      }
+      .drawer .head {
+        height: 52px;
+        flex: 0 0 auto;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 8px;
+      }
+      .drawer .head .label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        flex: 1;
+      }
+      .drawer .body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 8px 8px 0;
+      }
+      .drawer .actions {
+        padding-bottom: 12px;
+      }
+      .drawer .action {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--fg);
+        border: 0;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+      }
+      .drawer .action:hover {
+        background: var(--panel-2);
+      }
+      .drawer .action svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: var(--muted);
+      }
+      .drawer .action .desc {
+        color: var(--muted);
+        font-size: 11px;
+        margin-left: auto;
+      }
+      .drawer .group {
+        padding: 8px 12px 4px;
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+      .drawer .session {
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        margin: 0 4px 2px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .drawer .session:hover {
+        background: var(--panel-2);
+      }
+      .drawer .session.active {
+        background: var(--accent-bg);
+        color: var(--fg);
+      }
+      .drawer .session .preview {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .drawer .session .delete {
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0 4px;
+        opacity: 0;
+      }
+      .drawer .session:hover .delete {
+        opacity: 1;
+      }
+      .drawer .session .delete:hover {
+        color: var(--error);
+      }
+
+      .drawer .profile {
+        flex: 0 0 auto;
+        border-top: 1px solid var(--border);
+        padding: 10px;
+      }
+      .drawer .profile-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--fg);
+        border: 0;
+        background: transparent;
+        text-align: left;
+      }
+      .drawer .profile-btn:hover {
+        background: var(--panel-2);
+      }
+      .drawer .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--bg);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .drawer .profile-btn .name {
+        font-size: 13px;
+        flex: 1;
+      }
+      .drawer .profile-btn .name small {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      /* PROFILE PANEL (right slide) */
+      .panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 380px;
+        max-width: 90vw;
+        background: var(--panel);
+        border-left: 1px solid var(--border);
+        transform: translateX(100%);
+        transition: transform 0.2s ease;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      body.profile-open .panel {
+        transform: translateX(0);
+      }
+      .panel .head {
+        height: 52px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 8px;
+      }
+      .panel .head h2 {
+        font-size: 14px;
+        margin: 0;
+        flex: 1;
+        font-weight: 600;
+      }
+      .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 0 8px;
+      }
+      .tabs button {
+        background: transparent;
+        color: var(--muted);
+        border: 0;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 13px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .tabs button.active {
+        color: var(--fg);
+        border-color: var(--accent);
+      }
+      .tab-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 12px;
+      }
+      .tab-body section {
+        display: none;
+      }
+      .tab-body section.active {
+        display: block;
+      }
+      .tab-body h3 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin: 0 0 8px;
+        font-weight: 600;
+      }
+      .tab-body .row {
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--border);
+        font-size: 13px;
+      }
+      .tab-body .row:last-child {
+        border-bottom: 0;
+      }
+      .tab-body .row .src {
+        color: var(--muted);
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+      .tab-body .hint {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0 0 10px;
+      }
+      .tab-body .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border, #2a2d34);
+      }
+      .tab-body .settings-row:last-of-type {
+        border-bottom: none;
+      }
+      .tab-body .settings-row label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text, #e7e8ea);
+        flex: 0 0 auto;
+      }
+      .tab-body .settings-select {
+        flex: 1 1 auto;
+        max-width: 60%;
+        background: var(--panel, #1a1614);
+        color: var(--text, #e7e8ea);
+        border: 1px solid var(--border, #2a2d34);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .tab-body .settings-select:focus {
+        outline: none;
+        border-color: var(--accent, #d8b46c);
+      }
+      .tab-body .mem-search input {
+        width: 100%;
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font: inherit;
+        font-size: 13px;
+        margin-bottom: 8px;
+        outline: none;
+      }
+      .tab-body .mem-search input:focus {
+        border-color: var(--accent);
+      }
+      .tab-body .row .del {
+        float: right;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 14px;
+        opacity: 0;
+      }
+      .tab-body .row:hover .del {
+        opacity: 1;
+      }
+      .tab-body .row .del:hover {
+        color: var(--error);
+      }
+      .conn-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 8px 0;
+        background: var(--panel);
+      }
+      .conn-card .conn-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .conn-card .conn-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--fg);
+      }
+      .conn-card .conn-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted);
+        flex-shrink: 0;
+      }
+      .conn-card.connected .conn-dot {
+        background: #6cba63;
+        box-shadow: 0 0 8px rgba(108, 186, 99, 0.6);
+      }
+      .conn-card .conn-action {
+        margin-left: auto;
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .conn-card.connected .conn-action {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .conn-card .conn-doc {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .conn-card .conn-form {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .conn-card .conn-form label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+      .conn-card .conn-form input {
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font: inherit;
+        font-size: 13px;
+        outline: none;
+      }
+      .conn-card .conn-form input:focus {
+        border-color: var(--accent);
+      }
+      .conn-card .conn-form .help {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .conn-card .conn-form .row {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .conn-card .conn-form button {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .conn-card .conn-form button.secondary {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .style-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .style-grid label {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .style-grid label.selected {
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .style-grid input {
+        display: none;
+      }
+      .style-grid .style-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--fg);
+      }
+      .style-grid .style-desc {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .theme-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .theme-grid label {
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      .persona-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .persona-row {
+        display: grid;
+        grid-template-columns: 110px 1fr 38px;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .persona-row .pname {
+        color: var(--fg);
+        text-transform: capitalize;
+      }
+      .persona-row input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        outline: none;
+      }
+      .persona-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+      }
+      .persona-row input[type="range"]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        border: none;
+      }
+      .persona-row .pval {
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .persona-row.active .pval {
+        color: var(--accent);
+      }
+      .persona-narrative {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .persona-narrative label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+      .persona-narrative textarea {
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 10px;
+        font: inherit;
+        font-size: 12px;
+        outline: none;
+        resize: vertical;
+      }
+      .persona-narrative textarea:focus {
+        border-color: var(--accent);
+      }
+      .persona-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .persona-actions button {
+        background: var(--accent);
+        color: var(--bg);
+        border: 0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .persona-actions button.secondary {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .persona-preview {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--panel);
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        padding: 8px 10px;
+        margin-top: 4px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+      .theme-grid label.selected {
+        border-color: var(--accent);
+      }
+      .theme-grid input {
+        display: none;
+      }
+      .theme-swatch {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+      .theme-grid .name {
+        font-size: 12px;
+      }
+      .about-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 13px;
+        border-bottom: 1px dashed var(--border);
+      }
+      .about-row .k {
+        color: var(--muted);
+      }
+      .about-row .v {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scrim" id="scrim"></div>
+
+    <aside class="drawer" id="drawer">
+      <div class="head">
+        <button class="icon-btn" id="drawer-close" aria-label="Close">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <span class="label">Menu</span>
+      </div>
+      <div class="body">
+        <div class="actions">
+          <button class="action" data-action="new-chat">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            New chat
+          </button>
+          <button class="action" data-action="start-project">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 7l9-4 9 4-9 4-9-4z" />
+              <path d="M3 12l9 4 9-4" />
+              <path d="M3 17l9 4 9-4" />
+            </svg>
+            Start project
+          </button>
+          <button class="action" data-action="learn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M2 4l10-2 10 2v14l-10 2-10-2V4z" />
+              <path d="M12 2v18" />
+            </svg>
+            Learn
+          </button>
+          <button class="action" data-action="prayer">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 22V11l3-7 3 7v11" />
+              <path d="M5 22h14" />
+            </svg>
+            Walk through guided prayer
+          </button>
+          <button class="action" data-action="faith101">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M4 19V6a2 2 0 012-2h12v18H6a2 2 0 01-2-2z" />
+              <path d="M16 4v18" />
+            </svg>
+            Faith 101
+            <span class="desc">+ quiz</span>
+          </button>
+          <a class="action" href="/agent" style="text-decoration: none">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"
+              />
+            </svg>
+            Agent mode
+            <span class="desc">multi-step tasks</span>
+          </a>
+          <a class="action" href="/skills" style="text-decoration: none">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4-6 4 1.5-8.5L2 9h7z" />
+            </svg>
+            Skills
+            <span class="desc">named workflows</span>
+          </a>
+        </div>
+        <div class="group">Recent</div>
+        <div id="session-list"></div>
+      </div>
+      <div class="profile">
+        <button class="profile-btn" id="open-profile">
+          <span class="avatar" id="avatar">A</span>
+          <span class="name">
+            <span id="profile-name">You</span>
+            <small id="profile-email">localhost</small>
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="16"
+            height="16"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"
+            />
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <aside class="panel" id="panel">
+      <div class="head">
+        <button class="icon-btn" id="panel-close" aria-label="Close">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M6 6l12 12M6 18L18 6" />
+          </svg>
+        </button>
+        <h2>Profile</h2>
+      </div>
+      <div class="tabs" id="tabs">
+        <button data-tab="memory" class="active">Memory</button>
+        <button data-tab="connectors">Connectors</button>
+        <button data-tab="settings">Settings</button>
+        <button data-tab="about">About</button>
+      </div>
+      <div class="tab-body">
+        <section data-tab="memory" class="active">
+          <h3>Memory</h3>
+          <p class="hint">
+            Memory is for <em>your context</em> -- preferences, personal facts,
+            things you ask Azriel to remember. General doctrinal facts and
+            system internals are not stored here (those live in his training and
+            the repo). Secrets and credentials are never accepted. Search and
+            clear individual entries below.
+          </p>
+          <div class="mem-search">
+            <input
+              id="mem-search-input"
+              type="search"
+              placeholder="Search memory..."
+            />
+          </div>
+          <div id="memory"></div>
+        </section>
+        <section data-tab="connectors">
+          <h3>Connectors</h3>
+          <p class="hint">
+            Optional integrations. Until you plug a connector in, its tools are
+            not visible to Azriel -- so a fresh fork of this repo has zero
+            personal API access by default. Tokens are stored locally at
+            <code>~/.azriel-secrets/</code> with <code>0600</code> permissions
+            and are never committed.
+          </p>
+          <div id="connectors-list"></div>
+        </section>
+        <section data-tab="settings">
+          <div class="settings-row">
+            <label for="mode-select">Mode</label>
+            <select id="mode-select" class="settings-select">
+              <option value="instant">Instant -- direct answer</option>
+              <option value="deliberate">
+                Deliberate -- thinks first, slower
+              </option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label for="style-select">Answer style</label>
+            <select id="style-select" class="settings-select">
+              <option value="conviction">
+                Conviction -- direct, scripture-grounded
+              </option>
+              <option value="scholar">
+                Scholar -- surveys traditions then takes a view
+              </option>
+              <option value="pastoral">
+                Pastoral -- shorter, gentler, softer pacing
+              </option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label for="persona-select">Personality</label>
+            <select id="persona-select" class="settings-select">
+              <option value="default">
+                Default (no mix -- straight Azriel)
+              </option>
+              <option value="friendly">
+                Friendly + curious (interesting + funny + encouraging)
+              </option>
+              <option value="pastoral">
+                Pastoral + warm (nurturing + personal + somber)
+              </option>
+              <option value="scholar">
+                Scholar (interesting + professional + direct)
+              </option>
+              <option value="joyful">
+                Joyful (ecstatic + funny + encouraging)
+              </option>
+              <option value="crisp">
+                Crisp + direct (direct + professional)
+              </option>
+              <option value="poetic">
+                Poetic + reverent (poetic + somber + nurturing)
+              </option>
+              <option value="custom">Custom...</option>
+            </select>
+          </div>
+          <div id="persona-custom-block" style="display: none">
+            <p class="hint" style="margin-top: 12px">
+              Adjust each axis 0--100%. Effective tone is the relative
+              weighting.
+            </p>
+            <div class="persona-grid" id="persona-grid"></div>
+            <div class="persona-narrative">
+              <label for="persona-desc-input">Or describe a voice</label>
+              <textarea
+                id="persona-desc-input"
+                rows="2"
+                placeholder='e.g. "warm and pastoral, mostly direct, a little poetic when it fits"'
+              ></textarea>
+              <div class="persona-actions">
+                <button id="persona-auto-btn" type="button">
+                  Auto-mix from description
+                </button>
+                <button id="persona-reset-btn" type="button" class="secondary">
+                  Reset
+                </button>
+              </div>
+              <div class="persona-preview" id="persona-preview"></div>
+            </div>
+          </div>
+          <h3 style="margin-top: 18px">Theme</h3>
+          <div class="theme-grid" id="theme-grid">
+            <label data-theme="dark"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #1a1614, #d97757)"
+              ></div>
+              <span class="name">Dark</span></label
+            >
+            <label data-theme="light"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #faf6ee, #c2553a)"
+              ></div>
+              <span class="name">Light</span></label
+            >
+            <label data-theme="sepia"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #f1e3c7, #8a4628)"
+              ></div>
+              <span class="name">Sepia</span></label
+            >
+            <label data-theme="tabernacle"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #f7eed4, #8b1f1f)"
+              ></div>
+              <span class="name">Tabernacle</span></label
+            >
+            <label data-theme="golgotha"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #161514, #7a1a14)"
+              ></div>
+              <span class="name">Golgotha</span></label
+            >
+            <label data-theme="eden"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #0f1f15, #d6a850)"
+              ></div>
+              <span class="name">Eden</span></label
+            >
+            <label data-theme="sinai"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #1c1d20, #e8662f)"
+              ></div>
+              <span class="name">Sinai</span></label
+            >
+            <label data-theme="throne"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #0d1a2e, #2ec985)"
+              ></div>
+              <span class="name">Throne</span></label
+            >
+            <label data-theme="bethel"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #0a0e2a, #f3c95d)"
+              ></div>
+              <span class="name">Bethel</span></label
+            >
+            <label data-theme="pentecost"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #1f0f08, #f08720)"
+              ></div>
+              <span class="name">Pentecost</span></label
+            >
+            <label data-theme="new-jerusalem"
+              ><div
+                class="theme-swatch"
+                style="background: linear-gradient(135deg, #f7f4ec, #c89c4f)"
+              ></div>
+              <span class="name">New Jerusalem</span></label
+            >
+          </div>
+        </section>
+        <section data-tab="about">
+          <h3>System</h3>
+          <div id="about-rows"></div>
+        </section>
+      </div>
+    </aside>
+
+    <header class="top">
+      <button class="icon-btn" id="drawer-open" aria-label="Menu">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+      <h1>Azriel</h1>
+      <span class="status"
+        ><span id="status-dot" class="dot loading"></span
+        ><span id="status-text">loading</span></span
+      >
+      <button
+        class="icon-btn"
+        id="new-chat-header"
+        aria-label="New chat"
+        title="New chat"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      </button>
+    </header>
+
+    <main id="main">
+      <!-- Per-route backgrounds (only one visible at a time) -->
+      <div class="route-bg" data-bg="chat"></div>
+      <div class="route-bg bg-stars" data-bg="learn"><i></i><i></i><i></i></div>
+      <div class="route-bg bg-burst" data-bg="faith101">
+        <canvas id="burst-canvas"></canvas>
+      </div>
+      <div class="route-bg bg-rays" data-bg="prayer">
+        <canvas id="rays-canvas"></canvas>
+      </div>
+      <div class="route-bg bg-squares" data-bg="project">
+        <canvas id="squares-canvas"></canvas>
+      </div>
+
+      <div class="chat-col">
+        <!-- Default chat landing -->
+        <div class="empty landing" data-route="chat">
+          <h2 id="chat-greeting">Shalom.</h2>
+        </div>
+
+        <!-- Learn -->
+        <div class="empty landing" data-route="learn" style="display: none">
+          <div class="kicker">
+            Psalm 19:1 — The heavens declare the glory of God
+          </div>
+          <h2>What do you want to learn today?</h2>
+          <div class="sub">Or pick up where you left off.</div>
+          <div class="suggestions">
+            <button
+              data-s="Teach me how to pray. Walk me through the model prayer in Matthew 6:9-13 phrase by phrase."
+            >
+              How to pray
+            </button>
+            <button
+              data-s="Teach me how to fast properly. Cover the why, when, what to expect, and what to avoid. Cite Matthew 6:16-18 and Isaiah 58."
+            >
+              How to fast
+            </button>
+            <button
+              data-s="Teach me how to study the Bible inductively: observation, interpretation, application. Walk me through one example with Philippians 1."
+            >
+              How to study Scripture
+            </button>
+            <button
+              data-s="Teach me how to share the gospel naturally. Outline a simple framework I can use with friends."
+            >
+              How to share the gospel
+            </button>
+            <button
+              data-s="Teach me how to hear God's voice -- what it sounds like, how to test it, biblical examples."
+            >
+              How to hear God's voice
+            </button>
+          </div>
+          <div class="continue" data-track="learn"></div>
+        </div>
+
+        <!-- Faith 101 -->
+        <div class="empty landing" data-route="faith101" style="display: none">
+          <div class="kicker">
+            Malachi 4:2 — the Sun of righteousness with healing in his wings
+          </div>
+          <h2>Faith 101</h2>
+          <div class="sub">
+            A guided 7-topic syllabus with check-in questions between each.
+          </div>
+          <div class="suggestions">
+            <button
+              data-s="Begin Faith 101. Cover one topic at a time, starting with 'Who is God' (the Trinity), then 'Who is Jesus,' 'Who is the Holy Spirit,' 'Salvation,' 'The Bible,' 'Prayer,' 'The Church.' After each topic, ask me a brief 2-question check-in to gauge understanding before moving to the next. Wait for my answer."
+            >
+              Start from the beginning
+            </button>
+            <button
+              data-s="I want to focus on the Trinity. Teach me who God is in three persons -- Father, Son, Holy Spirit -- with Scripture and a check-in quiz at the end."
+            >
+              Focus: Trinity
+            </button>
+            <button
+              data-s="I want to focus on salvation. Teach me what it means to be saved, how it happens, and how I can know I am saved. Cite Romans 10, Ephesians 2, John 3."
+            >
+              Focus: Salvation
+            </button>
+            <button
+              data-s="I want to focus on the Holy Spirit. Teach me who he is, what he does, and how I receive him. Walk me through Acts 2."
+            >
+              Focus: Holy Spirit
+            </button>
+          </div>
+          <div class="quiz-launch">
+            <button id="quiz-start-btn" class="quiz-cta">
+              📜 Take the Faith 101 quiz
+            </button>
+          </div>
+          <div id="faith101-quiz" class="quiz" style="display: none"></div>
+          <div class="continue" data-track="faith101"></div>
+        </div>
+
+        <!-- Prayer -->
+        <div class="empty landing" data-route="prayer" style="display: none">
+          <div class="kicker">
+            Revelation 8:4 — the smoke of the incense, with the prayers of the
+            saints, ascended
+          </div>
+          <h2>Walk through guided prayer</h2>
+          <div class="sub">
+            Pause at each stage and respond before moving on.
+          </div>
+          <div class="suggestions">
+            <button
+              data-s="Walk me through ACTS prayer step by step (Adoration, Confession, Thanksgiving, Supplication). Begin with a brief invitation, pause at each stage, and invite me to respond before moving on."
+            >
+              ACTS prayer
+            </button>
+            <button
+              data-s="Lead me through the Lord's Prayer (Matthew 6:9-13) phrase by phrase. After each phrase, pause and invite me to make it personal before moving on."
+            >
+              The Lord's Prayer
+            </button>
+            <button
+              data-s="Lead me through a prayer of repentance using Psalm 51 as the framework. Pause to let me respond at each stage."
+            >
+              Prayer of repentance
+            </button>
+            <button
+              data-s="Lead me through a prayer for healing using James 5:14-16 as the framework. Pause and invite me to bring my needs."
+            >
+              Prayer for healing
+            </button>
+            <button
+              data-s="Lead me through silent contemplative prayer for 5 stages. Each stage is brief: a focusing thought, then 'be still,' then I respond."
+            >
+              Contemplative stillness
+            </button>
+          </div>
+          <div class="continue" data-track="prayer"></div>
+        </div>
+
+        <!-- Project -->
+        <div class="empty landing" data-route="project" style="display: none">
+          <div class="kicker">Nehemiah 2:17-18 — let us rise up and build</div>
+          <h2>Start a project</h2>
+          <div class="sub">Bible studies, ministry plans, sermon outlines.</div>
+          <div class="suggestions">
+            <button
+              data-s="I'd like to start a Bible-study project. Help me scope it: ask me 3-4 short questions to clarify the topic, audience, and length, then propose an outline."
+            >
+              Bible study series
+            </button>
+            <button
+              data-s="Help me outline a sermon. Ask me the passage, audience, and main point, then build me a 3-point sermon with intro, body, and call to response."
+            >
+              Sermon outline
+            </button>
+            <button
+              data-s="Help me plan a small group / discipleship plan over 8 weeks. Ask me the group's stage of faith and what they need most, then propose a curriculum."
+            >
+              Small group / 8-week plan
+            </button>
+            <button
+              data-s="Help me design a personal Bible reading plan. Ask me how much time per day, my current familiarity, and goals, then propose a 90-day schedule."
+            >
+              Personal reading plan
+            </button>
+          </div>
+          <div class="continue" data-track="project"></div>
+        </div>
+
+        <div
+          id="chat"
+          style="display: none; flex-direction: column; gap: 18px"
+        ></div>
+      </div>
+    </main>
+
+    <div class="compose-wrap">
+      <div class="compose">
+        <button
+          id="upload-btn"
+          class="upload"
+          aria-label="Attach a PDF, image, or document"
+          title="Attach a PDF, image, or document"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </button>
+        <input
+          id="upload-input"
+          type="file"
+          accept="application/pdf,image/*,.txt,.md,.csv,.json,.docx,.xlsx,.pptx"
+          style="display: none"
+        />
+        <textarea id="input" rows="1" placeholder="Ask Azriel..."></textarea>
+        <button id="send" class="send" aria-label="Send">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const API = "";
+      const $ = (s) => document.querySelector(s);
+      const chatEl = $("#chat");
+      const emptyEl = $("#empty");
+      const inputEl = $("#input");
+      const sendBtn = $("#send");
+
+      // SKILLS PREFILL: when launched from /skills, sessionStorage
+      // carries the kickoff prompt + skill name. Pop it into the
+      // compose box once and clear so a refresh doesn't repaint.
+      (function () {
+        try {
+          const kickoff = sessionStorage.getItem("azriel.skill_kickoff");
+          const skillName = sessionStorage.getItem("azriel.skill_name");
+          if (kickoff && inputEl) {
+            inputEl.value = kickoff;
+            sessionStorage.removeItem("azriel.skill_kickoff");
+            sessionStorage.removeItem("azriel.skill_name");
+            // Auto-resize the textarea to fit the kickoff. Fires after
+            // layout so the scrollHeight is valid.
+            requestAnimationFrame(() => {
+              inputEl.style.height = "auto";
+              inputEl.style.height = Math.min(inputEl.scrollHeight, 240) + "px";
+            });
+            console.log("Skill loaded:", skillName);
+          }
+        } catch (e) {
+          /* sessionStorage disabled in private mode etc -- ignore */
+        }
+      })();
+
+      // THEME
+      const savedTheme = localStorage.getItem("azriel.theme") || "dark";
+      document.documentElement.dataset.theme = savedTheme;
+      function setTheme(t) {
+        document.documentElement.dataset.theme = t;
+        localStorage.setItem("azriel.theme", t);
+        refreshThemeGrid();
+      }
+      function refreshThemeGrid() {
+        const t = document.documentElement.dataset.theme;
+        document
+          .querySelectorAll("#theme-grid label")
+          .forEach((l) =>
+            l.classList.toggle("selected", l.dataset.theme === t),
+          );
+      }
+
+      // ----- ANSWER STYLE -----
+      // Voice-only toggle. Identity stays fixed (biblically-based); this just
+      // adjusts the primer with a per-turn directive so Azriel renders
+      // his answers in conviction / scholar / pastoral voice. Persisted
+      // in localStorage and sent on every /chat as `style`.
+      function getAnswerStyle() {
+        return localStorage.getItem("azriel.answer_style") || "conviction";
+      }
+      function setAnswerStyle(s) {
+        if (!["conviction", "scholar", "pastoral"].includes(s)) return;
+        localStorage.setItem("azriel.answer_style", s);
+        refreshStyleGrid();
+      }
+      function refreshStyleGrid() {
+        const s = getAnswerStyle();
+        document.querySelectorAll("#style-grid label").forEach((l) => {
+          l.classList.toggle("selected", l.dataset.style === s);
+          const inp = l.querySelector("input");
+          if (inp) inp.checked = l.dataset.style === s;
+        });
+      }
+      // Wire up after DOM is laid out
+      (function () {
+        const grid = document.getElementById("style-grid");
+        if (!grid) return;
+        grid.querySelectorAll("label").forEach((l) => {
+          l.addEventListener("click", () => setAnswerStyle(l.dataset.style));
+        });
+        refreshStyleGrid();
+      })();
+
+      // ----- THINKING MODE (Instant / Deliberate) -----
+      function getThinkingMode() {
+        return localStorage.getItem("azriel.thinking_mode") || "instant";
+      }
+      function setThinkingMode(m) {
+        if (!["instant", "deliberate"].includes(m)) return;
+        localStorage.setItem("azriel.thinking_mode", m);
+        refreshModeGrid();
+      }
+      function refreshModeGrid() {
+        const m = getThinkingMode();
+        document.querySelectorAll("#mode-grid label").forEach((l) => {
+          l.classList.toggle("selected", l.dataset.mode === m);
+          const inp = l.querySelector("input");
+          if (inp) inp.checked = l.dataset.mode === m;
+        });
+      }
+      (function () {
+        const grid = document.getElementById("mode-grid");
+        if (!grid) return;
+        grid.querySelectorAll("label").forEach((l) => {
+          l.addEventListener("click", () => setThinkingMode(l.dataset.mode));
+        });
+        refreshModeGrid();
+      })();
+
+      // ----- PERSONA MIX -----
+      // 10 voice presets layered over fixed identity. Sums are NOT
+      // forced to 100; the runtime treats any preset >= 10% as
+      // active. Identity / refusals are explicitly preserved by the
+      // runtime directive's closing line.
+      const PERSONA_PRESETS = [
+        "funny",
+        "ecstatic",
+        "personal",
+        "somber",
+        "professional",
+        "interesting",
+        "nurturing",
+        "direct",
+        "poetic",
+        "encouraging",
+      ];
+      const PERSONA_DESC = {
+        funny: "Light, playful, tasteful jokes.",
+        ecstatic: "Joy-forward, exclamations, occasional emoji.",
+        personal: "Warm, first-name, pastoral check-in.",
+        somber: "Quiet, weighty, careful pacing.",
+        professional: "Crisp, structured, no slang.",
+        interesting: "Surfaces unusual angles, etymology, history.",
+        nurturing: "Gentle, encouraging. Affirms before correcting.",
+        direct: "Short sentences. No hedging.",
+        poetic: "Rhythmic, image-rich, scripture-cadenced.",
+        encouraging: "Builds you up; names what you did well.",
+      };
+      function getPersonaMix() {
+        try {
+          const raw = localStorage.getItem("azriel.persona_mix");
+          if (!raw) return {};
+          const obj = JSON.parse(raw);
+          return obj && typeof obj === "object" ? obj : {};
+        } catch (e) {
+          return {};
+        }
+      }
+      function setPersonaMix(mix) {
+        const clean = {};
+        for (const k of PERSONA_PRESETS) {
+          const v = Math.max(0, Math.min(100, parseInt(mix[k] || 0, 10) || 0));
+          if (v > 0) clean[k] = v;
+        }
+        localStorage.setItem("azriel.persona_mix", JSON.stringify(clean));
+        refreshPersonaPreview();
+      }
+      function getActivePersonaMix() {
+        // Server treats any value <10 as noise; mirror that for the
+        // outgoing payload to keep the wire small and the directive crisp.
+        const m = getPersonaMix();
+        const out = {};
+        for (const [k, v] of Object.entries(m)) {
+          if (v >= 10) out[k] = v;
+        }
+        return out;
+      }
+      function refreshPersonaPreview() {
+        const preview = document.getElementById("persona-preview");
+        if (!preview) return;
+        const m = getActivePersonaMix();
+        const entries = Object.entries(m).sort((a, b) => b[1] - a[1]);
+        if (!entries.length) {
+          preview.textContent =
+            "No persona directive will be sent (default Azriel voice).";
+          return;
+        }
+        const header =
+          "Voice mix: " +
+          entries.map(([n, v]) => `${v}% ${n}`).join(", ") +
+          ".";
+        const lines = entries.map(([n]) => ` - ${n}: ${PERSONA_DESC[n]}`);
+        preview.textContent = [header, ...lines].join("\n");
+      }
+      function renderPersonaGrid() {
+        const grid = document.getElementById("persona-grid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        const m = getPersonaMix();
+        for (const name of PERSONA_PRESETS) {
+          const v = m[name] || 0;
+          const row = el("div", "persona-row");
+          if (v >= 10) row.classList.add("active");
+          row.appendChild(el("span", "pname", name));
+          const range = document.createElement("input");
+          range.type = "range";
+          range.min = "0";
+          range.max = "100";
+          range.step = "5";
+          range.value = String(v);
+          range.dataset.preset = name;
+          row.appendChild(range);
+          const val = el("span", "pval", v + "%");
+          row.appendChild(val);
+          range.addEventListener("input", (e) => {
+            const newV = parseInt(e.target.value, 10) || 0;
+            const cur = getPersonaMix();
+            cur[name] = newV;
+            setPersonaMix(cur);
+            val.textContent = newV + "%";
+            row.classList.toggle("active", newV >= 10);
+          });
+          grid.appendChild(row);
+        }
+        refreshPersonaPreview();
+      }
+      async function autoMixFromDescription() {
+        const ta = document.getElementById("persona-desc-input");
+        if (!ta) return;
+        const desc = (ta.value || "").trim();
+        if (!desc) return;
+        const btn = document.getElementById("persona-auto-btn");
+        if (btn) btn.disabled = true;
+        try {
+          const r = await fetch(API + "/persona/auto-mix", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ description: desc }),
+          });
+          if (!r.ok) {
+            addError("auto-mix failed: HTTP " + r.status);
+            return;
+          }
+          const j = await r.json();
+          setPersonaMix(j.mix || {});
+          renderPersonaGrid();
+        } catch (e) {
+          addError("auto-mix error: " + e.message);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+      function resetPersonaMix() {
+        localStorage.removeItem("azriel.persona_mix");
+        const ta = document.getElementById("persona-desc-input");
+        if (ta) ta.value = "";
+        renderPersonaGrid();
+      }
+      (function () {
+        const grid = document.getElementById("persona-grid");
+        if (!grid) return;
+        renderPersonaGrid();
+        const auto = document.getElementById("persona-auto-btn");
+        if (auto) auto.addEventListener("click", autoMixFromDescription);
+        const reset = document.getElementById("persona-reset-btn");
+        if (reset) reset.addEventListener("click", resetPersonaMix);
+      })();
+
+      // ----- SETTINGS DROPDOWNS (Mode / Style / Personality presets) -----
+      const PERSONA_PRESET_MIXES = {
+        default: {},
+        friendly: { interesting: 60, funny: 30, encouraging: 30 },
+        pastoral: { nurturing: 60, personal: 40, somber: 25 },
+        scholar: { interesting: 60, professional: 40, direct: 30 },
+        joyful: { ecstatic: 55, funny: 40, encouraging: 30 },
+        crisp: { direct: 60, professional: 50 },
+        poetic: { poetic: 60, somber: 30, nurturing: 25 },
+      };
+
+      function detectPersonaPreset() {
+        // Match the saved persona mix against named presets. Returns
+        // the preset name if a saved mix exactly matches one, else
+        // "custom" if any saved mix exists, else "default".
+        const saved = getActivePersonaMix();
+        const savedKeys = Object.keys(saved).sort();
+        if (savedKeys.length === 0) return "default";
+        for (const [name, mix] of Object.entries(PERSONA_PRESET_MIXES)) {
+          const presetKeys = Object.keys(mix).sort();
+          if (savedKeys.length !== presetKeys.length) continue;
+          if (
+            savedKeys.every(
+              (k, i) => k === presetKeys[i] && saved[k] === mix[k],
+            )
+          ) {
+            return name;
+          }
+        }
+        return "custom";
+      }
+
+      function applyPersonaPreset(name) {
+        if (name === "custom") {
+          // Don't overwrite saved mix; just expose the slider grid.
+          return;
+        }
+        const mix = PERSONA_PRESET_MIXES[name] || {};
+        setPersonaMix(mix);
+        renderPersonaGrid();
+      }
+
+      (function wireSettingsDropdowns() {
+        const modeSel = document.getElementById("mode-select");
+        const styleSel = document.getElementById("style-select");
+        const personaSel = document.getElementById("persona-select");
+        const customBlock = document.getElementById("persona-custom-block");
+        if (!modeSel || !styleSel || !personaSel || !customBlock) return;
+
+        // Init from saved state.
+        modeSel.value = getThinkingMode();
+        styleSel.value = getAnswerStyle();
+        const initialPreset = detectPersonaPreset();
+        personaSel.value = initialPreset;
+        customBlock.style.display = initialPreset === "custom" ? "" : "none";
+
+        modeSel.addEventListener("change", (e) =>
+          setThinkingMode(e.target.value),
+        );
+        styleSel.addEventListener("change", (e) =>
+          setAnswerStyle(e.target.value),
+        );
+        personaSel.addEventListener("change", (e) => {
+          const v = e.target.value;
+          customBlock.style.display = v === "custom" ? "" : "none";
+          applyPersonaPreset(v);
+        });
+      })();
+
+      // SESSION ID
+      function uuid() {
+        return crypto.randomUUID
+          ? crypto.randomUUID()
+          : "s-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+      }
+      function el(tag, cls, text) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text != null) e.textContent = text;
+        return e;
+      }
+      let sessionId =
+        localStorage.getItem("azriel.session_id") ||
+        (() => {
+          const s = uuid();
+          localStorage.setItem("azriel.session_id", s);
+          return s;
+        })();
+
+      // PRESETS for action menu
+      const PRESETS = {
+        "new-chat": null,
+        "start-project":
+          "I'd like to start a Bible-study or ministry project. Help me scope it: ask me 3-4 short questions to clarify the topic, audience, and length, then propose an outline.",
+        learn:
+          "Teach me something today that's relevant to a biblically-based believer. Pick a topic you think I'd benefit from, give me a 4-paragraph teaching, then ask one reflection question.",
+        prayer:
+          "Walk me through a guided prayer step by step. Begin with a brief invitation, then take me through adoration, confession, thanksgiving, and supplication. Pause at each stage and invite me to respond before moving on.",
+        faith101:
+          "Begin Faith 101. Cover one topic at a time -- start with 'Who is God' (the Trinity), then 'Who is Jesus,' 'Who is the Holy Spirit,' 'Salvation,' 'The Bible,' 'Prayer,' 'The Church.' After each topic, ask me a brief 2-question check-in to gauge understanding before moving to the next. Wait for my answer.",
+      };
+
+      // Track storage: {session_id -> route name} so the sidebar Continue
+      // lists can group sessions by which menu item they were started from.
+      const TRACKS = JSON.parse(localStorage.getItem("azriel.tracks") || "{}");
+      function setTrack(sid, route) {
+        TRACKS[sid] = route;
+        localStorage.setItem("azriel.tracks", JSON.stringify(TRACKS));
+      }
+      function getTrack(sid) {
+        return TRACKS[sid] || "chat";
+      }
+
+      // Current active route ("chat" by default; "learn" / "faith101" / "prayer" / "project").
+      function currentRoute() {
+        return (location.hash || "#chat").slice(1);
+      }
+      function applyRoute() {
+        const route = currentRoute();
+        document.querySelectorAll(".route-bg").forEach((b) => {
+          b.classList.toggle("active", b.dataset.bg === route);
+        });
+        // landing visibility is governed by showEmpty() based on session state;
+        // here we just choose which landing variant is the active one.
+        document.querySelectorAll(".landing").forEach((l) => {
+          l.style.display = l.dataset.route === route ? "flex" : "none";
+        });
+        // Render Continue list for this route
+        renderContinue(route);
+      }
+      window.addEventListener("hashchange", () => {
+        applyRoute();
+        // entering a route while session is empty: stay on landing.
+        // entering while session has content: still show chat (loadHistory governs).
+      });
+
+      function showEmpty(show) {
+        // Only show the LANDING that matches the current route
+        const route = currentRoute();
+        document.querySelectorAll(".landing").forEach((l) => {
+          l.style.display = show && l.dataset.route === route ? "flex" : "none";
+        });
+        chatEl.style.display = show ? "none" : "flex";
+        document.querySelectorAll(".route-bg").forEach((b) => {
+          b.classList.toggle("active", show && b.dataset.bg === route);
+        });
+      }
+
+      async function renderContinue(route) {
+        const container = document.querySelector(
+          `.landing[data-route="${route}"] .continue`,
+        );
+        if (!container) return;
+        if (route === "chat") {
+          container.innerHTML = "";
+          return;
+        }
+        try {
+          const all = await fetch(API + "/sessions").then((r) => r.json());
+          const filtered = all.filter(
+            (s) =>
+              getTrack(s.session_id) === route && s.session_id !== sessionId,
+          );
+          container.innerHTML = "";
+          const h4 = document.createElement("h4");
+          h4.textContent = "Continue";
+          container.appendChild(h4);
+          if (!filtered.length) {
+            const p = document.createElement("div");
+            p.className = "empty-note";
+            p.textContent = "No saved " + route + " sessions yet.";
+            container.appendChild(p);
+            return;
+          }
+          for (const s of filtered.slice(0, 5)) {
+            const row = document.createElement("div");
+            row.className = "item";
+            const prev = document.createElement("span");
+            prev.className = "preview";
+            prev.textContent = s.first_user || "(empty)";
+            const t = document.createElement("time");
+            t.textContent = new Date(s.last_at * 1000).toLocaleDateString();
+            row.appendChild(prev);
+            row.appendChild(t);
+            row.onclick = () => {
+              setSession(s.session_id);
+            };
+            container.appendChild(row);
+          }
+        } catch (e) {}
+      }
+      function setSession(id, opts) {
+        sessionId = id;
+        localStorage.setItem("azriel.session_id", id);
+        // skipLoad lets callers that just MINTED a fresh session_id
+        // avoid the loadHistory race. loadHistory's async fetch returns
+        // [] for a brand-new id, then calls
+        // showEmpty(true) and that lands AFTER send()'s
+        // showEmpty(false), nuking the chat the user just started.
+        // Fresh sessions have nothing to load anyway.
+        if (!(opts && opts.skipLoad)) loadHistory();
+        refreshSessionList();
+        closeDrawer();
+      }
+      // Threshold-words that share Shalom's vibe: short Hebrew / Greek
+      // transliterations + biblical invocations. Curated from a list
+      // Azriel produced via /chat (with duplicates and place names
+      // pruned). Rotated on page load and on every "new chat" so the
+      // landing feels alive rather than rote.
+      const GREETINGS = [
+        {
+          word: "Shalom",
+          lang: "Hebrew",
+          def: "Peace, wholeness, completeness.",
+          ref: "Numbers 6:24-26",
+        },
+        {
+          word: "Maranatha",
+          lang: "Aramaic",
+          def: "Our Lord, come!",
+          ref: "1 Corinthians 16:22",
+        },
+        {
+          word: "Hosanna",
+          lang: "Hebrew/Aramaic",
+          def: "Save now! -- a cry of praise and plea.",
+          ref: "Psalm 118:25; Matthew 21:9",
+        },
+        {
+          word: "Hallelujah",
+          lang: "Hebrew",
+          def: "Praise YHWH.",
+          ref: "Psalm 150:1; Revelation 19:1",
+        },
+        {
+          word: "Amen",
+          lang: "Hebrew",
+          def: "Truly; so be it; firmly established.",
+          ref: "Deuteronomy 27:15-26; Revelation 22:20",
+        },
+        {
+          word: "Selah",
+          lang: "Hebrew",
+          def: "Pause and reflect -- a musical/liturgical mark.",
+          ref: "Psalm 3:2",
+        },
+        {
+          word: "Abba",
+          lang: "Aramaic",
+          def: "Father (intimate, child-to-parent).",
+          ref: "Mark 14:36; Romans 8:15",
+        },
+        {
+          word: "Immanuel",
+          lang: "Hebrew",
+          def: "God with us.",
+          ref: "Isaiah 7:14; Matthew 1:23",
+        },
+        {
+          word: "Yeshua",
+          lang: "Hebrew",
+          def: "Salvation -- the name 'Jesus'.",
+          ref: "Matthew 1:21",
+        },
+        {
+          word: "Mashiach",
+          lang: "Hebrew",
+          def: "Anointed One -- the Messiah.",
+          ref: "Daniel 9:25-26",
+        },
+        {
+          word: "Baruch",
+          lang: "Hebrew",
+          def: "Blessed.",
+          ref: "Psalm 119:12",
+        },
+        {
+          word: "Chesed",
+          lang: "Hebrew",
+          def: "Loyal love, covenant kindness.",
+          ref: "Psalm 136",
+        },
+        {
+          word: "Adonai",
+          lang: "Hebrew",
+          def: "Lord, my Lord -- spoken in place of YHWH.",
+          ref: "Psalm 110:1",
+        },
+        {
+          word: "Elohim",
+          lang: "Hebrew",
+          def: "God -- plural form of majesty.",
+          ref: "Genesis 1:1",
+        },
+        {
+          word: "Ruach",
+          lang: "Hebrew",
+          def: "Spirit; breath; wind.",
+          ref: "Genesis 1:2",
+        },
+        {
+          word: "Agape",
+          lang: "Greek",
+          def: "Self-giving, willed love.",
+          ref: "1 Corinthians 13",
+        },
+        {
+          word: "Charis",
+          lang: "Greek",
+          def: "Grace -- unearned favor.",
+          ref: "Ephesians 2:8",
+        },
+        {
+          word: "Eirene",
+          lang: "Greek",
+          def: "Peace -- the Greek of shalom.",
+          ref: "John 14:27",
+        },
+        {
+          word: "Kairos",
+          lang: "Greek",
+          def: "Appointed time, opportune moment.",
+          ref: "Mark 1:15; Ecclesiastes 3:1",
+        },
+        {
+          word: "Logos",
+          lang: "Greek",
+          def: "Word -- divine reason and self-expression.",
+          ref: "John 1:1",
+        },
+        {
+          word: "Doxa",
+          lang: "Greek",
+          def: "Glory; weight of presence.",
+          ref: "John 1:14",
+        },
+        {
+          word: "Koinonia",
+          lang: "Greek",
+          def: "Fellowship, sharing in common life.",
+          ref: "Acts 2:42",
+        },
+        {
+          word: "Tikvah",
+          lang: "Hebrew",
+          def: "Hope -- a cord, an expectation.",
+          ref: "Jeremiah 29:11",
+        },
+        {
+          word: "Emunah",
+          lang: "Hebrew",
+          def: "Faith, faithfulness, steadiness.",
+          ref: "Habakkuk 2:4",
+        },
+        { word: "Ahava", lang: "Hebrew", def: "Love.", ref: "Deuteronomy 6:5" },
+        {
+          word: "Hineni",
+          lang: "Hebrew",
+          def: "Here I am -- the surrendered yes.",
+          ref: "Genesis 22:1; Isaiah 6:8",
+        },
+        {
+          word: "Shema",
+          lang: "Hebrew",
+          def: "Hear -- opening of the central confession.",
+          ref: "Deuteronomy 6:4",
+        },
+        {
+          word: "Pneuma",
+          lang: "Greek",
+          def: "Spirit; breath -- the Greek of ruach.",
+          ref: "John 3:8; Acts 2:4",
+        },
+        {
+          word: "Hagios",
+          lang: "Greek",
+          def: "Holy, set apart.",
+          ref: "Isaiah 6:3 (LXX); Revelation 4:8",
+        },
+        {
+          word: "Sabaoth",
+          lang: "Hebrew",
+          def: "(Of) hosts, armies -- 'LORD of hosts'.",
+          ref: "1 Samuel 1:3; Romans 9:29",
+        },
+      ];
+      let currentGreeting = null;
+      function rotateGreeting() {
+        const h = document.getElementById("chat-greeting");
+        if (!h) return;
+        const lastWord = h.dataset.word || "";
+        let pick = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+        let guard = 0;
+        while (pick.word === lastWord && guard < 8) {
+          pick = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+          guard++;
+        }
+        h.textContent = pick.word + ".";
+        h.dataset.word = pick.word;
+        h.title = "Click for meaning";
+        currentGreeting = pick;
+        closeGreetingCard();
+      }
+      function closeGreetingCard() {
+        const card = document.getElementById("greeting-card");
+        if (card) card.remove();
+      }
+      function openGreetingCard() {
+        closeGreetingCard();
+        const h = document.getElementById("chat-greeting");
+        if (!h || !currentGreeting) return;
+        const card = el("div", "greeting-card");
+        card.id = "greeting-card";
+        const head = el("div", "gc-head");
+        head.appendChild(el("span", "gc-word", currentGreeting.word));
+        head.appendChild(el("span", "gc-lang", currentGreeting.lang));
+        card.appendChild(head);
+        card.appendChild(el("div", "gc-def", currentGreeting.def));
+        card.appendChild(el("div", "gc-ref", currentGreeting.ref));
+        const actions = el("div", "gc-actions");
+        const teach = el("button", null, "Have Azriel teach me");
+        teach.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const w = currentGreeting.word;
+          const r = currentGreeting.ref;
+          closeGreetingCard();
+          send(
+            `Teach me about "${w}" -- explain its meaning, root, and how it appears in ${r}. Keep it short, biblically grounded, and personal.`,
+          );
+        });
+        actions.appendChild(teach);
+        card.appendChild(actions);
+        h.parentElement.appendChild(card);
+      }
+      // Wire the greeting click + outside-click to close
+      (function () {
+        const h = document.getElementById("chat-greeting");
+        if (!h) return;
+        h.style.cursor = "pointer";
+        h.setAttribute("role", "button");
+        h.setAttribute("tabindex", "0");
+        h.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (document.getElementById("greeting-card")) closeGreetingCard();
+          else openGreetingCard();
+        });
+        h.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (document.getElementById("greeting-card")) closeGreetingCard();
+            else openGreetingCard();
+          }
+        });
+        document.addEventListener("click", (e) => {
+          const card = document.getElementById("greeting-card");
+          if (!card) return;
+          if (card.contains(e.target)) return;
+          if (h.contains(e.target)) return;
+          closeGreetingCard();
+        });
+      })();
+      rotateGreeting();
+
+      function newSession(prefill) {
+        const sid = uuid();
+        // Preserve current route so the new session stays in the active landing
+        setTrack(sid, currentRoute());
+        // Fresh session has no history to load; skipLoad avoids the
+        // loadHistory race that would showEmpty(true) over the chat
+        // we're about to draw.
+        setSession(sid, { skipLoad: true });
+        chatEl.innerHTML = "";
+        if (prefill) {
+          inputEl.value = prefill;
+          autoSize();
+          send();
+        } else {
+          rotateGreeting();
+          showEmpty(true);
+        }
+      }
+
+      async function loadHistory() {
+        chatEl.innerHTML = "";
+        try {
+          const msgs = await fetch(
+            API + "/sessions/" + encodeURIComponent(sessionId),
+          ).then((r) => r.json());
+          if (!msgs.length) {
+            showEmpty(true);
+            return;
+          }
+          showEmpty(false);
+          for (const m of msgs) {
+            if (m.role === "user") {
+              const u = el("div", "msg user");
+              u.appendChild(el("div", "bubble", m.text));
+              chatEl.appendChild(u);
+            } else {
+              addAzrielMsg(
+                {
+                  text: m.text,
+                  calls: m.calls || [],
+                  route: m.route || "tools",
+                  duration_ms: 0,
+                },
+                false,
+              );
+            }
+          }
+        } catch (e) {
+          showEmpty(true);
+        }
+        scrollChatBottom();
+      }
+      function scrollChatBottom() {
+        requestAnimationFrame(() => {
+          $("#main").scrollTop = $("#main").scrollHeight;
+        });
+      }
+
+      async function refreshSessionList() {
+        try {
+          const all = await fetch(API + "/sessions").then((r) => r.json());
+          // The global Recents list shows ONLY plain chat sessions.
+          // Route-tagged sessions (Learn / Faith 101 / Guided Prayer /
+          // Project) live exclusively in their own
+          // tab's Continue list, so opening Recents doesn't surface a
+          // confusing mix of every preset launch and every casual chat.
+          const list = all.filter((s) => getTrack(s.session_id) === "chat");
+          const div = $("#session-list");
+          div.innerHTML = "";
+          if (!list.length) {
+            div.innerHTML =
+              '<div style="padding:8px 12px;font-size:12px;color:var(--muted)">No saved sessions yet.</div>';
+            return;
+          }
+          for (const s of list) {
+            const row = el(
+              "div",
+              "session" + (s.session_id === sessionId ? " active" : ""),
+            );
+            row.appendChild(el("span", "preview", s.first_user || "(empty)"));
+            const del = el("span", "delete", "×");
+            del.onclick = async (ev) => {
+              ev.stopPropagation();
+              if (!confirm("Delete this session?")) return;
+              await fetch(
+                API + "/sessions/" + encodeURIComponent(s.session_id),
+                { method: "DELETE" },
+              );
+              if (s.session_id === sessionId) newSession();
+              else refreshSessionList();
+            };
+            row.appendChild(del);
+            row.onclick = () => setSession(s.session_id);
+            div.appendChild(row);
+          }
+        } catch (e) {}
+      }
+
+      function addUserMsg(text) {
+        const m = el("div", "msg user");
+        m.appendChild(el("div", "bubble", text));
+        chatEl.appendChild(m);
+        scrollChatBottom();
+      }
+      // Sanitize and lift <viz>...</viz> blocks out of an assistant response,
+      // returning {plainText, vizHtmls[]}. The visualize tool wraps SVG/HTML
+      // in these markers; the chat renderer mounts them as inline widgets.
+      function extractViz(text) {
+        const blocks = [];
+        const thinking = [];
+        let cleaned = text.replace(/<viz>([\s\S]*?)<\/viz>/g, (_, inner) => {
+          const safe = inner
+            .replace(/<script[\s\S]*?<\/script>/gi, "")
+            .replace(/\son[a-z]+\s*=\s*("|')[^"']*\1/gi, "");
+          blocks.push(safe);
+          return "[widget #" + blocks.length + "]";
+        });
+        // Capture and strip <thinking>...</thinking> scratchpads emitted
+        // in deliberate mode. Returned separately so the renderer can
+        // mount them as a collapsible <details> below the bubble.
+        cleaned = cleaned.replace(
+          /<thinking>([\s\S]*?)<\/thinking>/g,
+          (_, inner) => {
+            thinking.push(inner.trim());
+            return "";
+          },
+        );
+        // Unclosed thinking block (truncated mid-thought) -- still hide it
+        cleaned = cleaned.replace(/<thinking>[\s\S]*$/g, "");
+        // Qwen3.6 (and other reasoning-trained bases like
+        // Nemotron-3-Nano-Reasoning) emit <think>...</think> as their
+        // native reasoning trace. Treat them the same way as our
+        // deliberate-mode <thinking> blocks so post-η behavior is
+        // visually consistent.
+        cleaned = cleaned.replace(/<think>([\s\S]*?)<\/think>/g, (_, inner) => {
+          thinking.push(inner.trim());
+          return "";
+        });
+        cleaned = cleaned.replace(/<think>[\s\S]*$/g, "");
+        // Strip the v0.7 tool protocol from the bubble. <tool>NAME(ARG)</tool>
+        // and <tool_result>...</tool_result> blocks are already shown as
+        // collapsible details below the bubble (payload.calls), so leaving
+        // them in the natural-text body just creates noise. Also collapse
+        // any leftover "--- page N ---" markers that survived from a
+        // pdf_extract that bled into the assistant's narrative output.
+        cleaned = cleaned
+          .replace(/<tool>[\s\S]*?<\/tool>/g, "")
+          .replace(/<tool_result>[\s\S]*?<\/tool_result>/g, "")
+          // Open tags without close (model bleed-through, e.g. truncated)
+          .replace(/<tool>[\s\S]*$/g, "")
+          .replace(/<tool_result>[\s\S]*$/g, "")
+          // the vision provider/frontier API-Code agent-tool syntax bleeding through from
+          // the Qwen3-Coder base ("[tool_use Bash {...}]" or stray
+          // "[tool_result]..." prefixes). Not our protocol; strip them so
+          // the user doesn't see raw coder-agent markers.
+          .replace(/\[tool_use\s+\w+\s*\{[\s\S]*?\}\s*\]/g, "")
+          .replace(/\[tool_use\s+\w+[\s\S]*$/g, "")
+          .replace(/\[tool_result\][\s\S]*?\[\/tool_result\]/g, "")
+          .replace(/^\s*\[tool_result\]\s*/g, "")
+          .replace(/\[tool_result\]/g, "")
+          .replace(/^\s*---\s*page\s+\d+\s*---\s*$/gim, "")
+          // Collapse any line that's been spam-repeated (3+ identical lines)
+          .replace(/^(.+)(?:\r?\n\1){2,}$/gm, "$1")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+        return { text: cleaned, viz: blocks, thinking };
+      }
+
+      function addAzrielMsg(payload, allowSave = true) {
+        const m = el("div", "msg azriel");
+        if (payload.duration_ms || payload.route) {
+          const meta = `azriel · ${payload.route || "tools"}${payload.duration_ms ? " · " + payload.duration_ms + "ms" : ""}`;
+          m.appendChild(el("div", "meta", meta));
+        }
+        const { text: cleanText, viz, thinking } = extractViz(payload.text);
+        m.appendChild(el("div", "bubble", cleanText));
+        // Deliberate-mode <thinking> scratchpad: hidden by default,
+        // expandable so the user can audit Azriel's reasoning trail.
+        if (thinking && thinking.length) {
+          const td = el("details", "thinking-details");
+          const ts = el(
+            "summary",
+            null,
+            `thought for ${thinking.reduce((s, t) => s + t.length, 0)} chars`,
+          );
+          td.appendChild(ts);
+          for (const block of thinking) {
+            td.appendChild(el("pre", "thinking-pre", block));
+          }
+          m.appendChild(td);
+        }
+        if (viz.length) {
+          const wrap = el("div", "vizwrap");
+          for (const html of viz) {
+            const box = el("div", "vizbox");
+            box.innerHTML = html;
+            wrap.appendChild(box);
+          }
+          m.appendChild(wrap);
+        }
+        if (payload.calls && payload.calls.length) {
+          const calls = el("div", "calls");
+          for (const c of payload.calls) {
+            const d = el("details");
+            d.appendChild(
+              el("summary", null, `${c.name}(${JSON.stringify(c.arg)})`),
+            );
+            d.appendChild(el("pre", null, c.result));
+            calls.appendChild(d);
+          }
+          m.appendChild(calls);
+        }
+        if (allowSave) {
+          const save = el("button", "save", "save to memory");
+          save.onclick = async () => {
+            const note = prompt(
+              "Save what to memory?",
+              payload.text.slice(0, 200),
+            );
+            if (!note) return;
+            await fetch(
+              API +
+                "/sessions/" +
+                encodeURIComponent(sessionId) +
+                "/save-to-memory",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: note, source: "conversation" }),
+              },
+            );
+            refreshMemory();
+            save.textContent = "saved ✓";
+          };
+          m.appendChild(save);
+        }
+        // Skill proposal card. When the model fired propose_skill,
+        // the runtime lifted the structured payload into
+        // payload.skill_proposal. Render a dismissible save card.
+        if (payload.skill_proposal && payload.skill_proposal.name) {
+          m.appendChild(buildSkillProposalCard(payload.skill_proposal));
+        }
+        chatEl.appendChild(m);
+        scrollChatBottom();
+      }
+
+      function buildSkillProposalCard(prop) {
+        const card = el("div", "skill-proposal");
+        const h = el("div", "skill-proposal-head");
+        h.appendChild(el("span", "skill-proposal-icon", "✦"));
+        h.appendChild(
+          el("span", "skill-proposal-title", `Save as a skill: "${prop.name}"`),
+        );
+        card.appendChild(h);
+        card.appendChild(
+          el(
+            "div",
+            "skill-proposal-sub",
+            "Azriel thinks this workflow is reusable. Saving creates a " +
+              "one-click launcher in the Skills tab.",
+          ),
+        );
+        const preview = el("pre", "skill-proposal-kickoff", prop.kickoff);
+        card.appendChild(preview);
+        const metaParts = [];
+        if (prop.style) metaParts.push("style: " + prop.style);
+        if (prop.persona_mix) {
+          const ps = Object.entries(prop.persona_mix)
+            .map(([k, v]) => `${v}% ${k}`)
+            .join(", ");
+          if (ps) metaParts.push("persona: " + ps);
+        }
+        if (metaParts.length) {
+          card.appendChild(
+            el("div", "skill-proposal-meta", metaParts.join(" · ")),
+          );
+        }
+        const actions = el("div", "skill-proposal-actions");
+        const saveBtn = el("button", "skill-proposal-save", "Save skill");
+        saveBtn.onclick = async () => {
+          saveBtn.disabled = true;
+          saveBtn.textContent = "Saving...";
+          try {
+            const r = await fetch(API + "/skills/save", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: prop.name,
+                kickoff: prop.kickoff,
+                style: prop.style || null,
+                persona_mix: prop.persona_mix || null,
+                thinking: !!prop.thinking,
+              }),
+            });
+            if (!r.ok) throw new Error("save failed: " + r.status);
+            saveBtn.textContent = "Saved ✓";
+            saveBtn.disabled = true;
+          } catch (e) {
+            saveBtn.textContent = "Error";
+            saveBtn.disabled = false;
+            console.error(e);
+          }
+        };
+        const dismissBtn = el("button", "skill-proposal-dismiss", "Dismiss");
+        dismissBtn.onclick = () => card.remove();
+        actions.appendChild(saveBtn);
+        actions.appendChild(dismissBtn);
+        card.appendChild(actions);
+        return card;
+      }
+      function addError(text) {
+        const m = el("div", "msg error");
+        m.appendChild(el("div", "bubble", text));
+        chatEl.appendChild(m);
+      }
+
+      function addThinking() {
+        const m = el("div", "msg azriel thinking-msg");
+        m.innerHTML = `
+          <div class="thinking">
+            <svg class="flame" viewBox="0 0 24 30" aria-hidden="true">
+              <path class="glow" d="M12 2 C16 9 20 13 20 20 C20 26 16 28 12 28 C8 28 4 26 4 20 C4 13 8 9 12 2 Z"/>
+              <path class="core" d="M12 6 C14 11 16.5 13.5 16.5 18.5 C16.5 23 14 25 12 25 C10 25 7.5 23 7.5 18.5 C7.5 13.5 10 11 12 6 Z"/>
+            </svg>
+            <span>Azriel is thinking</span>
+            <span class="dots"><i></i><i></i><i></i></span>
+          </div>`;
+        chatEl.appendChild(m);
+        scrollChatBottom();
+        return m;
+      }
+
+      async function send(textOverride) {
+        const baseText = (textOverride || inputEl.value).trim();
+        if (!baseText) return;
+        // If the user has an attachment pending, splice the file reference
+        // onto the outgoing message (only) so the model can call the right
+        // tool, while the user-facing chat shows just what they typed.
+        let outgoing = baseText;
+        if (pendingUpload && pendingUpload.path) {
+          const ext = (pendingUpload.name || "").split(".").pop().toLowerCase();
+          let hint;
+          if (ext === "pdf") {
+            hint = `pdf_extract("${pendingUpload.path}|1-3")`;
+          } else if (
+            ["png", "jpg", "jpeg", "gif", "webp", "bmp"].includes(ext)
+          ) {
+            hint = `(image at ${pendingUpload.path})`;
+          } else {
+            hint = `fs_read("${pendingUpload.path}")`;
+          }
+          outgoing = `${baseText}\n\n[attached file: ${pendingUpload.name} -> ${pendingUpload.path}; if relevant, call ${hint} before answering]`;
+        }
+        inputEl.value = "";
+        autoSize();
+        if (typeof clearPendingUpload === "function") clearPendingUpload();
+        showEmpty(false);
+        addUserMsg(baseText);
+        const thinking = addThinking();
+        sendBtn.disabled = true;
+        // 5xx auto-retry. The reverse-proxy / tunnel sometimes times
+        // out a long generation; the server's response was actually
+        // 200 OK but the tunnel cut the connection and the browser
+        // saw HTTP 502/503/504. Auto-retry up to 2x with a brief
+        // visible status note so the user doesn't have to retype.
+        // Non-5xx errors (4xx, network) surface immediately.
+        const payload = JSON.stringify({
+          message: outgoing,
+          session_id: sessionId,
+          style: getAnswerStyle(),
+          persona_mix: getActivePersonaMix(),
+          thinking: getThinkingMode() === "deliberate",
+        });
+        const MAX_TRIES = 3;
+        let lastErr = null;
+        try {
+          for (let attempt = 1; attempt <= MAX_TRIES; attempt++) {
+            try {
+              const r = await fetch(API + "/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: payload,
+              });
+              if (r.status >= 500 && r.status < 600 && attempt < MAX_TRIES) {
+                // 5xx: tunnel hiccup; wait + retry
+                thinking.textContent = `tunnel timeout (${r.status}) — retrying (${attempt}/${MAX_TRIES - 1})…`;
+                await new Promise((res) => setTimeout(res, 2500));
+                continue;
+              }
+              if (!r.ok) throw new Error(`HTTP ${r.status}`);
+              thinking.remove();
+              addAzrielMsg(await r.json());
+              refreshHealth();
+              refreshSessionList();
+              lastErr = null;
+              break;
+            } catch (e) {
+              lastErr = e;
+              // Network-level failures also retry once.
+              if (
+                attempt < MAX_TRIES &&
+                /Failed to fetch|NetworkError|TypeError/i.test(e.message || "")
+              ) {
+                thinking.textContent = `connection dropped — retrying (${attempt}/${MAX_TRIES - 1})…`;
+                await new Promise((res) => setTimeout(res, 2500));
+                continue;
+              }
+              break;
+            }
+          }
+          if (lastErr) {
+            thinking.remove();
+            addError("error: " + lastErr.message);
+          }
+        } finally {
+          sendBtn.disabled = false;
+        }
+      }
+
+      function autoSize() {
+        inputEl.style.height = "auto";
+        inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + "px";
+      }
+
+      sendBtn.onclick = () => send();
+      inputEl.addEventListener("input", autoSize);
+      inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          send();
+        }
+      });
+
+      // ----- UPLOAD ("+" button) -----
+      // Picks a PDF / image / doc, uploads to /upload (server stores it
+      // under ~/azriel-files/uploads/), then drops a tiny pill above the
+      // composer reminding the user it was attached + auto-fills a prompt
+      // referencing the sandbox path so Azriel can call pdf_extract /
+      // fs_read / image_search on it.
+      const uploadBtn = $("#upload-btn");
+      const uploadInput = $("#upload-input");
+      let pendingUpload = null;
+      function clearPendingUpload() {
+        pendingUpload = null;
+        const pill = document.querySelector(".compose-wrap .upload-pill");
+        if (pill) pill.remove();
+      }
+      function showUploadPill(name, rel) {
+        const wrap = document.querySelector(".compose-wrap");
+        if (!wrap) return;
+        let pill = wrap.querySelector(".upload-pill");
+        if (!pill) {
+          pill = el("div", "upload-pill");
+          wrap.insertBefore(pill, wrap.firstChild);
+        }
+        pill.innerHTML = "";
+        pill.appendChild(document.createTextNode(`attached: ${name} (${rel})`));
+        const x = el("span", "x", "×");
+        x.title = "remove attachment";
+        x.onclick = clearPendingUpload;
+        pill.appendChild(x);
+      }
+      // Build a sensible default prompt for an attached file so the user
+      // can hit send immediately or edit first.
+      function fillPromptForFile(filePath, fileName) {
+        // Only auto-fill the textarea when it's empty. Mid-typing injection
+        // of "[attach: ...]" splits the user's sentence; the upload pill
+        // already shows the attachment and we'll append the file reference
+        // at send time so the model still sees it.
+        if (inputEl.value.trim()) {
+          autoSize();
+          inputEl.focus();
+          return;
+        }
+        const ext = (fileName.split(".").pop() || "").toLowerCase();
+        let stub;
+        if (ext === "pdf") {
+          stub = `Read pdf_extract("${filePath}|1-3") and summarize the main points of ${fileName}.`;
+        } else if (["png", "jpg", "jpeg", "gif", "webp", "bmp"].includes(ext)) {
+          stub = `I just attached the image ${fileName} (${filePath}). Describe what you can infer and offer next steps.`;
+        } else {
+          stub = `fs_read("${filePath}") and tell me what's in ${fileName}.`;
+        }
+        inputEl.value = stub;
+        autoSize();
+        inputEl.focus();
+      }
+
+      async function uploadAndAttach() {
+        const f = uploadInput.files && uploadInput.files[0];
+        if (!f) return;
+        uploadBtn.disabled = true;
+        try {
+          const fd = new FormData();
+          fd.append("file", f);
+          const r = await fetch(API + "/upload", {
+            method: "POST",
+            body: fd,
+          });
+          if (!r.ok) {
+            const detail = await r.text();
+            addError(`upload failed: HTTP ${r.status} ${detail}`);
+            return;
+          }
+          const j = await r.json();
+          pendingUpload = j;
+          showUploadPill(f.name, j.path);
+          fillPromptForFile(j.path, j.name);
+        } catch (e) {
+          addError("upload error: " + e.message);
+        } finally {
+          uploadBtn.disabled = false;
+          uploadInput.value = "";
+        }
+      }
+
+      // ----- + MENU -----
+      // Popup above the composer. Top-level: choose Upload PDF / image /
+      // doc, or browse handbooks / sandbox. Browse panes hit
+      // GET /sandbox-list and render an in-place file picker with search;
+      // click a file -> fillPromptForFile and close.
+      const composeEl = document.querySelector(".compose");
+      let menuEl = null;
+      function closeMenu() {
+        if (menuEl && menuEl.parentElement)
+          menuEl.parentElement.removeChild(menuEl);
+        menuEl = null;
+        window.removeEventListener("resize", positionMenu);
+        window.removeEventListener("scroll", positionMenu, true);
+      }
+      // Always-on outside-click + Escape listeners. We rely on
+      // stopPropagation in the in-menu/+button handlers below to keep the
+      // menu open during its own clicks; this listener only fires for
+      // clicks that actually escape the menu region.
+      document.addEventListener("click", (e) => {
+        if (!menuEl) return;
+        if (menuEl.contains(e.target)) return;
+        if (uploadBtn && uploadBtn.contains(e.target)) return;
+        closeMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (menuEl && e.key === "Escape") {
+          e.preventDefault();
+          closeMenu();
+        }
+      });
+      function positionMenu() {
+        if (!menuEl || !uploadBtn) return;
+        const r = uploadBtn.getBoundingClientRect();
+        menuEl.style.left = Math.max(8, r.left) + "px";
+        menuEl.style.bottom =
+          Math.max(8, window.innerHeight - r.top + 8) + "px";
+      }
+      function ensureMenu() {
+        if (!menuEl) {
+          menuEl = el("div", "compose-menu");
+          // Append to <body> with position:fixed so no ancestor (main,
+          // .compose-wrap, etc.) can clip the menu via overflow:hidden.
+          document.body.appendChild(menuEl);
+          positionMenu();
+          window.addEventListener("resize", positionMenu);
+          window.addEventListener("scroll", positionMenu, true);
+        }
+        menuEl.innerHTML = "";
+        return menuEl;
+      }
+      function pickWithAccept(accept) {
+        // Open the picker SYNCHRONOUSLY in the click handler so the
+        // browser's user-activation gesture is preserved, then tear down
+        // the menu. Microtask closeMenu so the open-click event finishes
+        // bubbling first.
+        uploadInput.accept = accept;
+        uploadInput.click();
+        Promise.resolve().then(closeMenu);
+      }
+      function renderTopMenu() {
+        const m = ensureMenu();
+        const list = el("div", "menu-list");
+        const items = [
+          {
+            label: "Upload PDF",
+            action: () => pickWithAccept("application/pdf"),
+          },
+          { label: "Upload image", action: () => pickWithAccept("image/*") },
+          {
+            label: "Upload document",
+            action: () =>
+              pickWithAccept(".txt,.md,.csv,.json,.docx,.xlsx,.pptx"),
+          },
+          {
+            label: "Browse handbooks",
+            action: () => renderBrowse("missler", "Handbooks"),
+          },
+          {
+            label: "Browse my files",
+            action: () => renderBrowse(".", "Sandbox"),
+          },
+        ];
+        for (const it of items) {
+          const b = el("button", "menu-item");
+          b.type = "button";
+          b.appendChild(el("span", "glyph", "+"));
+          b.appendChild(document.createTextNode(it.label));
+          b.addEventListener("click", (e) => {
+            e.stopPropagation();
+            it.action();
+          });
+          list.appendChild(b);
+        }
+        m.appendChild(list);
+      }
+      function fmtSize(n) {
+        if (n == null) return "";
+        if (n > 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + " MB";
+        if (n > 1024) return (n / 1024).toFixed(1) + " KB";
+        return n + " B";
+      }
+      async function renderBrowse(path, title) {
+        const m = ensureMenu();
+        const head = el("div", "menu-head");
+        const back = document.createElement("button");
+        back.type = "button";
+        back.textContent = "← back";
+        back.onclick = renderTopMenu;
+        head.appendChild(back);
+        head.appendChild(el("span", null, title));
+        m.appendChild(head);
+        const search = document.createElement("input");
+        search.className = "menu-search";
+        search.placeholder = "filter...";
+        search.type = "search";
+        m.appendChild(search);
+        const list = el("div", "menu-list");
+        list.innerHTML = '<div class="menu-empty">loading...</div>';
+        m.appendChild(list);
+        let items = [];
+        try {
+          const r = await fetch(
+            API + "/sandbox-list?path=" + encodeURIComponent(path),
+          );
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          const data = await r.json();
+          items = data.items || [];
+        } catch (e) {
+          list.innerHTML =
+            '<div class="menu-empty">error: ' + e.message + "</div>";
+          return;
+        }
+        function rerender(query) {
+          list.innerHTML = "";
+          const q = (query || "").toLowerCase();
+          const filtered = items.filter(
+            (it) => !q || it.name.toLowerCase().includes(q),
+          );
+          if (!filtered.length) {
+            list.innerHTML = '<div class="menu-empty">(no matches)</div>';
+            return;
+          }
+          for (const it of filtered) {
+            const b = el("button", "menu-item");
+            b.type = "button";
+            b.appendChild(el("span", "glyph", it.is_dir ? "/" : "·"));
+            b.appendChild(document.createTextNode(it.name));
+            if (it.size != null) {
+              b.appendChild(el("span", "meta", fmtSize(it.size)));
+            }
+            b.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (it.is_dir) {
+                renderBrowse(it.path, title + " / " + it.name);
+              } else {
+                fillPromptForFile(it.path, it.name);
+                closeMenu();
+              }
+            });
+            list.appendChild(b);
+          }
+        }
+        rerender("");
+        search.addEventListener("input", (e) => rerender(e.target.value));
+        setTimeout(() => search.focus(), 50);
+      }
+      if (uploadBtn && uploadInput) {
+        uploadBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (menuEl) closeMenu();
+          else renderTopMenu();
+        });
+        uploadInput.addEventListener("change", uploadAndAttach);
+      }
+
+      // ----- PASTE IMAGE -----
+      // Listen on the textarea for clipboard paste. If the clipboard has
+      // an image (screenshot, copied image), upload it via /upload as if
+      // the user picked it from the + menu. Falls through to default
+      // text-paste behavior otherwise.
+      async function uploadBlob(blob, name) {
+        if (!blob) return;
+        if (typeof uploadBtn !== "undefined" && uploadBtn)
+          uploadBtn.disabled = true;
+        try {
+          const fd = new FormData();
+          fd.append("file", blob, name);
+          const r = await fetch(API + "/upload", {
+            method: "POST",
+            body: fd,
+          });
+          if (!r.ok) {
+            const detail = await r.text();
+            addError(`upload failed: HTTP ${r.status} ${detail}`);
+            return;
+          }
+          const j = await r.json();
+          pendingUpload = j;
+          showUploadPill(name, j.path);
+          fillPromptForFile(j.path, j.name);
+        } catch (e) {
+          addError("paste upload error: " + e.message);
+        } finally {
+          if (typeof uploadBtn !== "undefined" && uploadBtn)
+            uploadBtn.disabled = false;
+        }
+      }
+      inputEl.addEventListener("paste", (e) => {
+        const items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (const item of items) {
+          if (item.kind === "file" && item.type.startsWith("image/")) {
+            e.preventDefault();
+            const blob = item.getAsFile();
+            const ext = (item.type.split("/")[1] || "png").replace(
+              /[^a-z0-9]/gi,
+              "",
+            );
+            const name = `pasted-${Date.now()}.${ext}`;
+            uploadBlob(blob, name);
+            return;
+          }
+        }
+      });
+      $("#new-chat-header").onclick = () => newSession();
+      document.querySelectorAll(".empty .suggestions button").forEach((b) => {
+        b.onclick = () => {
+          // Preset buttons inside a route-specific landing (Learn /
+          // Faith 101 / Guided Prayer / Project) start a FRESH session
+          // tagged with that route, so the resulting
+          // conversation lives in that tab's Continue list, not in the
+          // global Recents. Default chat presets keep the current
+          // sessionId so the user can continue an in-flight thread.
+          const landing = b.closest(".landing");
+          const route =
+            landing && landing.dataset.route ? landing.dataset.route : "chat";
+          if (route !== "chat") {
+            const sid = uuid();
+            setTrack(sid, route);
+            setSession(sid, { skipLoad: true });
+            chatEl.innerHTML = "";
+          }
+          send(b.dataset.s);
+        };
+      });
+
+      // DRAWER ACTIONS
+      // Map action names -> route hashes. "new-chat" stays on the default
+      // chat route; the others navigate to their own landing page first.
+      const ROUTE_FOR_ACTION = {
+        "new-chat": "chat",
+        "start-project": "project",
+        learn: "learn",
+        prayer: "prayer",
+        faith101: "faith101",
+      };
+      document.querySelectorAll(".drawer .action").forEach((b) => {
+        b.onclick = () => {
+          const a = b.dataset.action;
+          const route = ROUTE_FOR_ACTION[a] || "chat";
+          closeDrawer();
+          // fresh session, tagged with the chosen route, navigate to that landing
+          const sid = uuid();
+          setTrack(sid, route);
+          location.hash = "#" + route;
+          // Fresh session, no history to fetch -- skipLoad avoids the
+          // loadHistory race that flashes the landing back over the chat.
+          setSession(sid, { skipLoad: true });
+        };
+      });
+
+      // DRAWER + PROFILE PANEL
+      const scrim = $("#scrim");
+      function openDrawer() {
+        document.body.classList.add("drawer-open");
+      }
+      function closeDrawer() {
+        document.body.classList.remove("drawer-open");
+      }
+      function openProfile() {
+        document.body.classList.remove("drawer-open");
+        document.body.classList.add("profile-open");
+        refreshAbout();
+      }
+      function closeProfile() {
+        document.body.classList.remove("profile-open");
+      }
+      $("#drawer-open").onclick = openDrawer;
+      $("#drawer-close").onclick = closeDrawer;
+      $("#panel-close").onclick = closeProfile;
+      $("#open-profile").onclick = openProfile;
+      scrim.onclick = () => {
+        closeDrawer();
+        closeProfile();
+      };
+
+      // TABS
+      document.querySelectorAll("#tabs button").forEach((b) => {
+        b.onclick = () => {
+          document
+            .querySelectorAll("#tabs button")
+            .forEach((x) => x.classList.toggle("active", x === b));
+          document
+            .querySelectorAll(".tab-body section")
+            .forEach((s) =>
+              s.classList.toggle("active", s.dataset.tab === b.dataset.tab),
+            );
+        };
+      });
+
+      // THEME picker
+      document
+        .querySelectorAll("#theme-grid label")
+        .forEach((l) => (l.onclick = () => setTheme(l.dataset.theme)));
+
+      // HEALTH / TOOLS / MEMORY / ABOUT
+      async function refreshHealth() {
+        try {
+          const h = await fetch(API + "/health").then((r) => r.json());
+          $("#status-dot").className =
+            "dot" + (h.status === "ready" ? "" : " loading");
+          $("#status-text").textContent =
+            h.status === "ready" ? `${Math.floor(h.uptime_s / 60)}m` : h.status;
+          window._lastHealth = h;
+        } catch (e) {
+          $("#status-dot").className = "dot dead";
+          $("#status-text").textContent = "down";
+        }
+      }
+      let _memCache = [];
+      function _renderMemory(query) {
+        const div = $("#memory");
+        div.innerHTML = "";
+        const q = (query || "").toLowerCase().trim();
+        const rows = q
+          ? _memCache.filter(
+              (r) =>
+                (r.text || "").toLowerCase().includes(q) ||
+                (r.source || "").toLowerCase().includes(q),
+            )
+          : _memCache;
+        if (!rows.length) {
+          const msg = q
+            ? `(no matches for "${query}")`
+            : "(empty -- Azriel will save here when you ask him to remember something)";
+          div.innerHTML = `<div style="color:var(--muted);padding:12px 0">${msg}</div>`;
+          return;
+        }
+        for (const r of rows) {
+          const row = el("div", "row");
+          row.appendChild(el("span", "src", r.source));
+          const del = el("span", "del", "×");
+          del.title = "delete this memory";
+          del.onclick = async () => {
+            try {
+              await fetch(API + "/memory/" + r.rowid, { method: "DELETE" });
+              _memCache = _memCache.filter((x) => x.rowid !== r.rowid);
+              _renderMemory($("#mem-search-input").value);
+            } catch (e) {}
+          };
+          row.appendChild(del);
+          row.appendChild(el("div", null, r.text));
+          div.appendChild(row);
+        }
+      }
+      async function refreshMemory() {
+        try {
+          _memCache = await fetch(API + "/memory?limit=200").then((r) =>
+            r.json(),
+          );
+          _renderMemory($("#mem-search-input").value);
+        } catch (e) {}
+      }
+      const _memSearch = $("#mem-search-input");
+      if (_memSearch) {
+        _memSearch.addEventListener("input", (e) =>
+          _renderMemory(e.target.value),
+        );
+      }
+
+      async function refreshAbout() {
+        const div = $("#about-rows");
+        div.innerHTML = "";
+        try {
+          const h =
+            window._lastHealth ||
+            (await fetch(API + "/health").then((r) => r.json()));
+          const tools = await fetch(API + "/tools").then((r) => r.json());
+          const rows = [
+            ["Name", h.name || "Azriel"],
+            ["Version", h.version || "unknown"],
+            ["Status", h.status],
+            [
+              "Uptime",
+              `${Math.floor(h.uptime_s / 60)}m ${Math.floor(h.uptime_s % 60)}s`,
+            ],
+            ["Requests served", String(h.requests_served)],
+            ["Tools available", String(tools.length)],
+            ["Theme", document.documentElement.dataset.theme],
+          ];
+          for (const [k, v] of rows) {
+            const r = el("div", "about-row");
+            r.appendChild(el("span", "k", k));
+            r.appendChild(el("span", "v", v));
+            div.appendChild(r);
+          }
+        } catch (e) {
+          div.textContent = "error: " + e.message;
+        }
+      }
+
+      // ----- CONNECTORS panel -----
+      async function refreshConnectors() {
+        const div = $("#connectors-list");
+        if (!div) return;
+        div.innerHTML =
+          '<div style="color:var(--muted);padding:8px 0">loading...</div>';
+        let conns;
+        try {
+          conns = await fetch(API + "/connectors").then((r) => r.json());
+        } catch (e) {
+          div.innerHTML =
+            '<div style="color:var(--muted);padding:8px 0">error: ' +
+            e.message +
+            "</div>";
+          return;
+        }
+        div.innerHTML = "";
+        for (const c of conns) {
+          const card = el("div", "conn-card");
+          const isConn = c.status && c.status.connected;
+          if (isConn) card.classList.add("connected");
+          const head = el("div", "conn-head");
+          head.appendChild(el("span", "conn-dot"));
+          head.appendChild(el("span", "conn-name", c.label || c.name));
+          const action = el(
+            "button",
+            "conn-action",
+            isConn ? "Disconnect" : "Connect",
+          );
+          action.onclick = () => toggleConnector(c, action, card);
+          head.appendChild(action);
+          card.appendChild(head);
+          card.appendChild(el("div", "conn-doc", c.doc || ""));
+          // Form area, hidden until "Connect" pressed
+          const form = el("div", "conn-form");
+          form.style.display = "none";
+          for (const f of c.config_schema || []) {
+            const lbl = el("label", null, f.label || f.key);
+            const inp = document.createElement("input");
+            inp.type = f.type || "text";
+            inp.placeholder = f.label || f.key;
+            inp.dataset.key = f.key;
+            form.appendChild(lbl);
+            form.appendChild(inp);
+            if (f.help) form.appendChild(el("div", "help", f.help));
+          }
+          const row = el("div", "row");
+          const cancel = el("button", "secondary", "Cancel");
+          cancel.onclick = () => {
+            form.style.display = "none";
+            action.textContent = "Connect";
+          };
+          const save = el("button", null, "Save");
+          save.onclick = async () => {
+            const cfg = {};
+            for (const inp of form.querySelectorAll("input")) {
+              if (inp.value.trim()) cfg[inp.dataset.key] = inp.value.trim();
+            }
+            save.disabled = true;
+            save.textContent = "saving...";
+            try {
+              const r = await fetch(
+                API + "/connectors/" + encodeURIComponent(c.name) + "/connect",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(cfg),
+                },
+              );
+              if (!r.ok) {
+                const detail = await r.text();
+                save.textContent = "Save";
+                save.disabled = false;
+                addError(
+                  "connector " +
+                    c.name +
+                    " failed: HTTP " +
+                    r.status +
+                    " " +
+                    detail,
+                );
+                return;
+              }
+              await refreshConnectors();
+            } catch (e) {
+              save.disabled = false;
+              save.textContent = "Save";
+              addError("connector save error: " + e.message);
+            }
+          };
+          row.appendChild(cancel);
+          row.appendChild(save);
+          form.appendChild(row);
+          card.appendChild(form);
+          // Bind action button: connect -> show form; disconnect -> POST disconnect
+          action.onclick = async () => {
+            if (isConn) {
+              if (
+                !confirm(
+                  `Disconnect ${c.label || c.name}? The token at ~/.azriel-secrets/${c.name}.json will be deleted.`,
+                )
+              )
+                return;
+              try {
+                const r = await fetch(
+                  API +
+                    "/connectors/" +
+                    encodeURIComponent(c.name) +
+                    "/disconnect",
+                  { method: "POST" },
+                );
+                if (!r.ok) {
+                  addError("disconnect failed: HTTP " + r.status);
+                  return;
+                }
+                await refreshConnectors();
+              } catch (e) {
+                addError("disconnect error: " + e.message);
+              }
+            } else {
+              if (form.style.display === "none") {
+                form.style.display = "flex";
+                action.textContent = "Cancel";
+                const first = form.querySelector("input");
+                if (first) first.focus();
+              } else {
+                form.style.display = "none";
+                action.textContent = "Connect";
+              }
+            }
+          };
+          div.appendChild(card);
+        }
+        if (!conns.length) {
+          div.innerHTML =
+            '<div style="color:var(--muted);padding:8px 0">(no connectors registered)</div>';
+        }
+      }
+
+      refreshHealth();
+      refreshMemory();
+      refreshConnectors();
+      refreshThemeGrid();
+      // If active session is empty AND current hash route is non-default,
+      // showEmpty() will pick the right landing automatically.
+      applyRoute();
+      loadHistory();
+      refreshSessionList();
+      setInterval(refreshHealth, 15000);
+      setInterval(refreshSessionList, 30000);
+
+      // ----- FAITH 101 QUIZ -----
+      // First 4 questions authored live by Azriel via /chat; last 3
+      // hand-finished in the same voice + Scripture-citation style after the
+      // model hit its segment-token cap mid-response.
+      // Five quiz banks keyed by user-rated biblical understanding 1..5.
+      // Levels 1 (new believer) and 5 (advanced) authored to be distinct
+      // from level 3 (existing). Levels 2 and 4 are interpolations.
+      const FAITH101_BANKS = {};
+
+      // LEVEL 3 (intermediate -- existing 7 questions):
+      FAITH101_BANKS[3] = [
+        {
+          topic: "Trinity",
+          q: "How many persons are in the Godhead?",
+          choices: ["One", "Two", "Three", "Four"],
+          answer: 2,
+          why: "There is one God who exists eternally as three distinct persons -- Father, Son, and Holy Spirit (Matthew 28:19; 1 Corinthians 8:4-6).",
+        },
+        {
+          topic: "Jesus",
+          q: "What is the significance of Jesus being called 'the Word'?",
+          choices: [
+            "He speaks the truth",
+            "He is the eternal divine Logos through whom all things were created",
+            "He is the only way to heaven",
+            "He gave us the Bible",
+          ],
+          answer: 1,
+          why: "In the beginning was the Word, and the Word was with God, and the Word was God ... all things were made through him (John 1:1, 3).",
+        },
+        {
+          topic: "Holy Spirit",
+          q: "What does the Holy Spirit do for believers?",
+          choices: [
+            "He convicts the world of sin",
+            "He intercedes for us in prayer",
+            "He guides us into all truth",
+            "All of the above",
+          ],
+          answer: 3,
+          why: "The Spirit convicts (John 16:8), intercedes (Romans 8:26), and guides into all truth (John 16:13).",
+        },
+        {
+          topic: "Salvation",
+          q: "What is the primary requirement for salvation?",
+          choices: [
+            "Baptism",
+            "Living a good life",
+            "Faith in Jesus Christ",
+            "Religious tradition",
+          ],
+          answer: 2,
+          why: "By grace you have been saved through faith. And this is not your own doing; it is the gift of God (Ephesians 2:8-9).",
+        },
+        {
+          topic: "The Bible",
+          q: "What is the primary purpose of Scripture?",
+          choices: [
+            "Historical record",
+            "Self-help guide",
+            "God-breathed revelation that teaches, reproves, corrects, and trains",
+            "Cultural artifact",
+          ],
+          answer: 2,
+          why: "All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness (2 Timothy 3:16-17).",
+        },
+        {
+          topic: "Prayer",
+          q: "What did Jesus teach about how we should pray?",
+          choices: [
+            "Pray loudly in public to be noticed",
+            "Repeat memorized words many times",
+            "Go into your room, shut the door, and pray to your Father in secret",
+            "Pray only when in trouble",
+          ],
+          answer: 2,
+          why: "When you pray, go into your room and shut the door and pray to your Father who is in secret (Matthew 6:6).",
+        },
+        {
+          topic: "The Church",
+          q: "What is the church, biblically?",
+          choices: [
+            "A building",
+            "A weekly event",
+            "The body of Christ -- believers united in him as members one of another",
+            "A nonprofit organization",
+          ],
+          answer: 2,
+          why: "Now you are the body of Christ and individually members of it (1 Corinthians 12:27).",
+        },
+      ];
+
+      // LEVEL 1 -- WALK DIAGNOSTIC (not a knowledge test). Each question is
+      // self-assessment; choices are graduated by `band` (1=seeking, 2=uncertain,
+      // 3=growing, 4=anchored). Azriel reads the profile and speaks pastorally.
+      FAITH101_BANKS[1] = [
+        {
+          kind: "diagnostic",
+          topic: "Trust in Christ",
+          q: "When you think about your relationship with Jesus right now, which is closest to true?",
+          choices: [
+            {
+              text: "I haven't placed my trust in him yet -- I'm exploring.",
+              band: 1,
+            },
+            {
+              text: "I've prayed to receive him, but I'm not sure it stuck.",
+              band: 2,
+            },
+            {
+              text: "I trusted him at one point but I've drifted.",
+              band: 2,
+            },
+            {
+              text: "I've put my whole life in his hands and that anchor holds.",
+              band: 4,
+            },
+          ],
+          why: "Whoever believes in him should not perish but have eternal life (John 3:16). The first step of faith is a simple yes -- trust given to a Person, not perfection earned.",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Identity",
+          q: "When God looks at you, what do you sense he sees?",
+          choices: [
+            { text: "Mostly my failures.", band: 1 },
+            { text: "Someone he tolerates.", band: 2 },
+            { text: "A work in progress he loves.", band: 3 },
+            {
+              text: "His son or daughter -- forgiven, beloved, free.",
+              band: 4,
+            },
+          ],
+          why: "See what kind of love the Father has given to us, that we should be called children of God; and so we are (1 John 3:1).",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Holy Spirit",
+          q: "Which is closest to your experience of the Holy Spirit?",
+          choices: [
+            {
+              text: "I'm not really sure what the Holy Spirit does in my life.",
+              band: 1,
+            },
+            {
+              text: "I believe he's there but I haven't felt much.",
+              band: 2,
+            },
+            {
+              text: "I sense his nudges -- conviction, comfort, leading.",
+              band: 3,
+            },
+            {
+              text: "I've experienced his power -- Spirit-baptism, gifts, presence.",
+              band: 4,
+            },
+          ],
+          why: "The Helper, the Holy Spirit, will teach you all things (John 14:26). He is given to indwell, comfort, lead, and empower the believer -- not just an idea but a Person at work in you.",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Scripture",
+          q: "How often does Scripture actually shape your week?",
+          choices: [
+            {
+              text: "Almost never -- I rely on what I remember.",
+              band: 1,
+            },
+            { text: "Sundays only.", band: 2 },
+            {
+              text: "A few times a week -- a chapter or verse here and there.",
+              band: 3,
+            },
+            { text: "Daily -- it's my food.", band: 4 },
+          ],
+          why: "Man shall not live by bread alone, but by every word that comes from the mouth of God (Matthew 4:4).",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Prayer",
+          q: "What's your honest prayer life right now?",
+          choices: [
+            { text: "I only pray when I'm in trouble.", band: 1 },
+            { text: "Short habit prayers (meals, bedtime).", band: 2 },
+            {
+              text: "Regular conversation with God most days.",
+              band: 3,
+            },
+            {
+              text: "Continual dialogue -- I pray without ceasing.",
+              band: 4,
+            },
+          ],
+          why: "Pray without ceasing (1 Thessalonians 5:17). Prayer isn't a performance -- it's the breath of relationship.",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Church family",
+          q: "Are you planted in a church family right now?",
+          choices: [
+            {
+              text: "No -- I'm between churches or unchurched.",
+              band: 1,
+            },
+            {
+              text: "I attend, but no one really knows me.",
+              band: 2,
+            },
+            {
+              text: "I'm part of a small group or serving regularly.",
+              band: 3,
+            },
+            {
+              text: "I have spiritual fathers/mothers and I'm discipling others.",
+              band: 4,
+            },
+          ],
+          why: "And let us consider how to stir up one another to love and good works, not neglecting to meet together (Hebrews 10:24-25).",
+        },
+        {
+          kind: "diagnostic",
+          topic: "Mission",
+          q: "When did you last share your faith with someone?",
+          choices: [
+            {
+              text: "I haven't / I don't feel called to that.",
+              band: 1,
+            },
+            { text: "Years ago.", band: 2 },
+            { text: "In the last month.", band: 3 },
+            {
+              text: "It's woven into how I live -- people regularly hear my testimony.",
+              band: 4,
+            },
+          ],
+          why: "You will receive power when the Holy Spirit has come upon you, and you will be my witnesses (Acts 1:8).",
+        },
+      ];
+
+      // LEVEL 5 (advanced -- nuance, denominational distinctives, harder parsing):
+      FAITH101_BANKS[5] = [
+        {
+          topic: "Trinity",
+          q: "Which best describes the Trinity?",
+          choices: [
+            "Three modes of one person (modalism)",
+            "Three separate gods (tritheism)",
+            "One essence, three coequal persons",
+            "Two persons, one Spirit",
+          ],
+          answer: 2,
+          why: "The Father, Son, and Spirit are coequal and coeternal -- one essence, three persons (Matthew 28:19; John 1:1; Acts 5:3-4).",
+        },
+        {
+          topic: "Jesus",
+          q: "What does the hypostatic union teach about Christ?",
+          choices: [
+            "He was God only (appearing human)",
+            "He was man only (later adopted as Son)",
+            "He is fully God and fully man in one person",
+            "His divine nature replaced his humanity",
+          ],
+          answer: 2,
+          why: "He was in the form of God... taking the form of a servant, being born in the likeness of men (Philippians 2:6-7).",
+        },
+        {
+          topic: "Holy Spirit",
+          q: "Per Acts 8:14-17, what does the Samaritans' experience teach about Spirit baptism?",
+          choices: [
+            "Spirit baptism happens automatically at conversion",
+            "Spirit baptism is a distinct work subsequent to regeneration",
+            "Tongues are unnecessary",
+            "Only apostles receive the Spirit",
+          ],
+          answer: 1,
+          why: "They had only been baptized in the name of the Lord Jesus; then the apostles laid hands on them and they received the Holy Spirit (Acts 8:16-17).",
+        },
+        {
+          topic: "Salvation",
+          q: "Per the conditional-security view, can a true believer fall away?",
+          choices: [
+            "No, perseverance of the saints is automatic",
+            "Yes -- Hebrews 6 and 10 warn genuine believers",
+            "Only at the final judgment",
+            "Only Catholics can fall away",
+          ],
+          answer: 1,
+          why: "It is impossible for those who have once been enlightened... if they then fall away, to restore them again to repentance (Hebrews 6:4-6).",
+        },
+        {
+          topic: "The Bible",
+          q: "What does plenary verbal inspiration teach?",
+          choices: [
+            "Only the moral teachings are inspired",
+            "Only the original autographs were inspired in their thoughts",
+            "Every word of the original autographs was God-breathed",
+            "The Bible is inspired only when read",
+          ],
+          answer: 2,
+          why: "All Scripture is breathed out by God -- not just thoughts but every word (2 Timothy 3:16; Matthew 5:18).",
+        },
+        {
+          topic: "Prayer",
+          q: "What distinguishes intercession from supplication?",
+          choices: [
+            "No difference",
+            "Intercession is for self; supplication is for others",
+            "Intercession is praying for others; supplication is asking for needs",
+            "Only ordained ministers can intercede",
+          ],
+          answer: 2,
+          why: "I urge that supplications, prayers, intercessions, and thanksgivings be made for all people (1 Timothy 2:1).",
+        },
+        {
+          topic: "The Church",
+          q: "Which list best describes the marks of the early church per Acts 2:42?",
+          choices: [
+            "Liturgy, hierarchy, sacrament",
+            "Apostles' teaching, fellowship, breaking of bread, prayer",
+            "Tithing, attendance, evangelism",
+            "Worship, fasting, almsgiving",
+          ],
+          answer: 1,
+          why: "They devoted themselves to the apostles' teaching and the fellowship, to the breaking of bread and the prayers (Acts 2:42).",
+        },
+      ];
+
+      // Levels 2 and 4 are mixes (no separate authoring needed)
+      FAITH101_BANKS[2] = FAITH101_BANKS[1]
+        .slice(0, 4)
+        .concat(FAITH101_BANKS[3].slice(4));
+      FAITH101_BANKS[4] = FAITH101_BANKS[3]
+        .slice(0, 4)
+        .concat(FAITH101_BANKS[5].slice(4));
+
+      // Quiz state
+      let quizState = null;
+
+      function renderQuiz() {
+        const root = $("#faith101-quiz");
+        const launch = $(".quiz-launch");
+        if (!root) return;
+        launch.style.display = "none";
+        root.style.display = "flex";
+        root.innerHTML = "";
+        // Step 1: difficulty selector
+        const intro = el("div", "q");
+        intro.appendChild(el("div", "topic", "Calibrate"));
+        intro.appendChild(
+          el(
+            "div",
+            "qtext",
+            "From 1 to 5, how strong is your biblical understanding?",
+          ),
+        );
+        const lvls = el("div", "choices");
+        const labels = [
+          "1 -- where am I in my walk? (self-assessment, not a test)",
+          "2 -- early believer (mix: walk + basic knowledge)",
+          "3 -- intermediate knowledge quiz",
+          "4 -- mature, want to be stretched",
+          "5 -- advanced -- challenge me",
+        ];
+        labels.forEach((label, idx) => {
+          const lbl = el("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "lvl";
+          input.value = String(idx + 1);
+          lbl.appendChild(input);
+          lbl.appendChild(document.createTextNode(label));
+          choicesAppend(lvls, lbl);
+        });
+        intro.appendChild(lvls);
+        root.appendChild(intro);
+        const row = el("div", "submit-row");
+        const cancel = el("button", "secondary", "Cancel");
+        const begin = el("button", null, "Begin");
+        row.appendChild(cancel);
+        row.appendChild(begin);
+        root.appendChild(row);
+        cancel.onclick = () => {
+          root.style.display = "none";
+          root.innerHTML = "";
+          launch.style.display = "block";
+        };
+        begin.onclick = () => {
+          const sel = root.querySelector("input[name=lvl]:checked");
+          if (!sel) {
+            begin.textContent = "Pick a level...";
+            return;
+          }
+          startQuiz(parseInt(sel.value, 10));
+        };
+      }
+
+      function choicesAppend(parent, child) {
+        parent.appendChild(child);
+      }
+
+      function startQuiz(level) {
+        quizState = {
+          level,
+          questions: FAITH101_BANKS[level],
+          idx: 0,
+          answers: [],
+        };
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const root = $("#faith101-quiz");
+        root.innerHTML = "";
+        const s = quizState;
+        const total = s.questions.length;
+        const q = s.questions[s.idx];
+
+        // Progress
+        const prog = el("div", "score");
+        prog.style.fontSize = "13px";
+        prog.innerHTML = `<strong>Question ${s.idx + 1}</strong> of ${total} &nbsp;·&nbsp; level ${s.level}`;
+        root.appendChild(prog);
+
+        const card = el("div", "q");
+        card.appendChild(el("div", "topic", q.topic));
+        card.appendChild(el("div", "qtext", q.q));
+        const choices = el("div", "choices");
+        q.choices.forEach((c, j) => {
+          const lbl = el("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "answer";
+          input.value = String(j);
+          lbl.appendChild(input);
+          const choiceText = typeof c === "string" ? c : c.text;
+          lbl.appendChild(document.createTextNode(choiceText));
+          // Click anywhere on the label submits immediately
+          lbl.onclick = () => {
+            // wait a tick so the radio reflects
+            setTimeout(() => answerAndAdvance(j, lbl, choices, q, card), 80);
+          };
+          choices.appendChild(lbl);
+        });
+        card.appendChild(choices);
+        root.appendChild(card);
+
+        const row = el("div", "submit-row");
+        const back = el("button", "secondary", s.idx > 0 ? "Back" : "Cancel");
+        back.onclick = () => {
+          if (s.idx === 0) {
+            $("#faith101-quiz").style.display = "none";
+            $("#faith101-quiz").innerHTML = "";
+            $(".quiz-launch").style.display = "block";
+          } else {
+            s.idx--;
+            s.answers.pop();
+            renderQuestion();
+          }
+        };
+        row.appendChild(back);
+        root.appendChild(row);
+      }
+
+      function answerAndAdvance(chosen, lbl, choicesEl, q, card) {
+        // freeze inputs
+        choicesEl
+          .querySelectorAll("input")
+          .forEach((inp) => (inp.disabled = true));
+        const labels = choicesEl.querySelectorAll("label");
+        if (q.kind === "diagnostic") {
+          // No right/wrong on a self-assessment -- just mark the chosen one
+          labels[chosen].classList.add("chosen");
+        } else if (chosen === q.answer) {
+          labels[chosen].classList.add("correct");
+        } else {
+          labels[chosen].classList.add("wrong");
+          labels[q.answer].classList.add("correct");
+        }
+        const why = el("div", "why", q.why);
+        card.appendChild(why);
+        quizState.answers.push(chosen);
+
+        // Show a Continue button briefly
+        const row = $("#faith101-quiz").querySelector(".submit-row");
+        row.innerHTML = "";
+        const next = el(
+          "button",
+          null,
+          quizState.idx + 1 < quizState.questions.length
+            ? "Next →"
+            : "See score",
+        );
+        next.onclick = () => {
+          if (quizState.idx + 1 < quizState.questions.length) {
+            quizState.idx++;
+            renderQuestion();
+          } else {
+            renderScore();
+          }
+        };
+        row.appendChild(next);
+      }
+
+      function renderScore() {
+        const root = $("#faith101-quiz");
+        const s = quizState;
+        const BAND_LABEL = ["", "seeking", "uncertain", "growing", "anchored"];
+
+        // Tally knowledge + diagnostic separately
+        let kCorrect = 0,
+          kTotal = 0,
+          dTotal = 0,
+          dBandSum = 0;
+        const weak = [];
+        const profile = []; // {topic, band, label}
+        s.questions.forEach((q, i) => {
+          if (q.kind === "diagnostic") {
+            const c = q.choices[s.answers[i]];
+            const band = c && c.band ? c.band : 1;
+            dTotal++;
+            dBandSum += band;
+            profile.push({
+              topic: q.topic,
+              band,
+              label: BAND_LABEL[band] || "unknown",
+            });
+          } else {
+            kTotal++;
+            if (s.answers[i] === q.answer) kCorrect++;
+            else weak.push(q.topic);
+          }
+        });
+        const dAvg = dTotal ? dBandSum / dTotal : 0;
+        const overallLabel = dTotal
+          ? BAND_LABEL[Math.max(1, Math.round(dAvg))]
+          : "";
+        const lowest = profile
+          .filter((p) => p.band <= 2)
+          .sort((a, b) => a.band - b.band)
+          .map((p) => p.topic);
+
+        root.innerHTML = "";
+        const banner = el("div", "score");
+        const parts = [];
+        if (dTotal) {
+          parts.push(
+            `<strong>Walk profile: ${overallLabel}</strong> (avg ${dAvg.toFixed(
+              1,
+            )} / 4)`,
+          );
+          if (lowest.length) {
+            parts.push(`Areas to lean into: ${lowest.join(", ")}.`);
+          }
+        }
+        if (kTotal) {
+          parts.push(
+            `<strong>${kCorrect} / ${kTotal}</strong> correct on knowledge.` +
+              (weak.length ? ` Weak: ${weak.join(", ")}.` : ""),
+          );
+        }
+        if (!parts.length) parts.push("Complete.");
+        banner.innerHTML = parts.join(" &nbsp;·&nbsp; ");
+        root.appendChild(banner);
+
+        // Per-question recap (compact, kind-aware)
+        s.questions.forEach((q, i) => {
+          const card = el("div", "q");
+          let badge;
+          if (q.kind === "diagnostic") {
+            const c = q.choices[s.answers[i]];
+            const band = c && c.band ? c.band : 1;
+            badge = `${BAND_LABEL[band] || "unknown"}`;
+          } else {
+            badge = s.answers[i] === q.answer ? "✓" : "✗";
+          }
+          card.appendChild(el("div", "topic", `${q.topic} -- ${badge}`));
+          card.appendChild(el("div", "qtext", q.q));
+          card.appendChild(el("div", "why", q.why));
+          root.appendChild(card);
+        });
+
+        const row = el("div", "submit-row");
+        const wantTeach = lowest.length || weak.length;
+        if (wantTeach) {
+          const teach = el(
+            "button",
+            null,
+            dTotal
+              ? "Speak into my walk, Azriel"
+              : "Have Azriel teach my weak topics",
+          );
+          teach.onclick = () => {
+            if (dTotal) {
+              const profLine = profile
+                .map((p) => `${p.topic} -- ${p.label}`)
+                .join("; ");
+              const focus = lowest.length ? lowest.slice(0, 2).join(", ") : "";
+              const knowledgeLine = weak.length
+                ? ` On the knowledge side I missed: ${weak.join(", ")}.`
+                : "";
+              const focusLine = focus
+                ? ` Speak gently and pastorally, focusing especially on: ${focus}.`
+                : " Speak gently and pastorally.";
+              send(
+                `I just took the Faith 101 walk diagnostic. My profile: ${profLine}.${knowledgeLine}${focusLine} Use Scripture, keep each section short, and ask me one reflection question at the end.`,
+              );
+            } else {
+              send(
+                "I just took the Faith 101 quiz at difficulty level " +
+                  s.level +
+                  " and need teaching on these topics: " +
+                  weak.join(", ") +
+                  ". For each topic, give me a 4-paragraph explanation grounded in Scripture appropriate to a level-" +
+                  s.level +
+                  " believer, then ask me one reflection question before moving to the next.",
+              );
+            }
+          };
+          row.appendChild(teach);
+        }
+        const retake = el("button", "secondary", "Different level");
+        retake.onclick = () => renderQuiz();
+        row.appendChild(retake);
+        root.appendChild(row);
+      }
+
+      const quizBtn = document.getElementById("quiz-start-btn");
+      if (quizBtn) quizBtn.onclick = renderQuiz;
+
+      // ----- PRISMATIC BURST (Faith 101 route bg) -----
+      // Vanilla WebGL2 port of the OGL PrismaticBurst component. The shader
+      // is the full ray-marched volumetric prism (44-step march, layered
+      // noise, bend-angle distortion) -- gives a liquid prism feel, not the
+      // flat spinning rays my first port had. Color palette is built from
+      // ~12 shades of the active theme so it reads as "many shades of the
+      // theme" rather than 4 hard stops. WebGL2 only (the shader uses
+      // #version 300 es). Re-tints on data-theme change.
+      (function () {
+        const canvas = document.getElementById("burst-canvas");
+        if (!canvas) return;
+        const gl = canvas.getContext("webgl2", {
+          alpha: true,
+          premultipliedAlpha: false,
+          antialias: false,
+        });
+        if (!gl) return;
+
+        const vert = `#version 300 es
+          in vec2 position;
+          void main(){ gl_Position = vec4(position, 0.0, 1.0); }
+        `;
+
+        const frag = `#version 300 es
+          precision highp float;
+          precision highp int;
+          out vec4 fragColor;
+          uniform vec2 uResolution;
+          uniform float uTime;
+          uniform float uIntensity;
+          uniform float uSpeed;
+          uniform int uAnimType;
+          uniform vec2 uMouse;
+          uniform int uColorCount;
+          uniform float uDistort;
+          uniform vec2 uOffset;
+          uniform sampler2D uGradient;
+          uniform float uNoiseAmount;
+          uniform int uRayCount;
+
+          float hash21(vec2 p){
+              p = floor(p);
+              float f = 52.9829189 * fract(dot(p, vec2(0.065, 0.005)));
+              return fract(f);
+          }
+          mat2 rot30(){ return mat2(0.8, -0.5, 0.5, 0.8); }
+          float layeredNoise(vec2 fragPx){
+              vec2 p = mod(fragPx + vec2(uTime*30.0, -uTime*21.0), 1024.0);
+              vec2 q = rot30() * p;
+              float n = 0.0;
+              n += 0.40 * hash21(q);
+              n += 0.25 * hash21(q*2.0 + 17.0);
+              n += 0.20 * hash21(q*4.0 + 47.0);
+              n += 0.10 * hash21(q*8.0 + 113.0);
+              n += 0.05 * hash21(q*16.0 + 191.0);
+              return n;
+          }
+          vec3 rayDir(vec2 frag, vec2 res, vec2 offset, float dist){
+              float focal = res.y * max(dist, 1e-3);
+              return normalize(vec3(2.0*(frag - offset) - res, focal));
+          }
+          float edgeFade(vec2 frag, vec2 res, vec2 offset){
+              vec2 toC = frag - 0.5*res - offset;
+              float r = length(toC) / (0.5 * min(res.x, res.y));
+              float x = clamp(r, 0.0, 1.0);
+              float q = x*x*x*(x*(x*6.0 - 15.0) + 10.0);
+              float s = q * 0.5;
+              s = pow(s, 1.5);
+              float tail = 1.0 - pow(1.0 - s, 2.0);
+              s = mix(s, tail, 0.2);
+              float dn = (layeredNoise(frag*0.15) - 0.5) * 0.0015 * s;
+              return clamp(s + dn, 0.0, 1.0);
+          }
+          mat3 rotX(float a){ float c=cos(a), s=sin(a); return mat3(1.0,0.0,0.0, 0.0,c,-s, 0.0,s,c); }
+          mat3 rotY(float a){ float c=cos(a), s=sin(a); return mat3(c,0.0,s, 0.0,1.0,0.0, -s,0.0,c); }
+          mat3 rotZ(float a){ float c=cos(a), s=sin(a); return mat3(c,-s,0.0, s,c,0.0, 0.0,0.0,1.0); }
+          vec3 sampleGradient(float t){
+              t = clamp(t, 0.0, 1.0);
+              return texture(uGradient, vec2(t, 0.5)).rgb;
+          }
+          vec2 rot2(vec2 v, float a){
+              float s = sin(a), c = cos(a);
+              return mat2(c, -s, s, c) * v;
+          }
+          float bendAngle(vec3 q, float t){
+              return 0.8*sin(q.x*0.55 + t*0.6)
+                   + 0.7*sin(q.y*0.50 - t*0.5)
+                   + 0.6*sin(q.z*0.60 + t*0.7);
+          }
+          void main(){
+              vec2 frag = gl_FragCoord.xy;
+              float t = uTime * uSpeed;
+              float jitterAmp = 0.1 * clamp(uNoiseAmount, 0.0, 1.0);
+              vec3 dir = rayDir(frag, uResolution, uOffset, 1.0);
+              float marchT = 0.0;
+              vec3 col = vec3(0.0);
+              float n = layeredNoise(frag);
+              vec4 c = cos(t*0.2 + vec4(0.0, 33.0, 11.0, 0.0));
+              mat2 M2 = mat2(c.x, c.y, c.z, c.w);
+              float amp = clamp(uDistort, 0.0, 50.0) * 0.15;
+              mat3 rot3dMat = mat3(1.0);
+              if(uAnimType == 1){
+                vec3 ang = vec3(t*0.31, t*0.21, t*0.17);
+                rot3dMat = rotZ(ang.z) * rotY(ang.y) * rotX(ang.x);
+              }
+              mat3 hoverMat = mat3(1.0);
+              if(uAnimType == 2){
+                vec2 m = uMouse * 2.0 - 1.0;
+                vec3 ang = vec3(m.y*0.6, m.x*0.6, 0.0);
+                hoverMat = rotY(ang.y) * rotX(ang.x);
+              }
+              for (int i = 0; i < 44; ++i) {
+                  vec3 P = marchT * dir;
+                  P.z -= 2.0;
+                  float rad = length(P);
+                  vec3 Pl = P * (10.0 / max(rad, 1e-6));
+                  if(uAnimType == 0){
+                      Pl.xz *= M2;
+                  } else if(uAnimType == 1){
+                      Pl = rot3dMat * Pl;
+                  } else {
+                      Pl = hoverMat * Pl;
+                  }
+                  float stepLen = min(rad - 0.3, n * jitterAmp) + 0.1;
+                  float grow = smoothstep(0.35, 3.0, marchT);
+                  float a1 = amp * grow * bendAngle(Pl * 0.6, t);
+                  float a2 = 0.5 * amp * grow * bendAngle(Pl.zyx * 0.5 + 3.1, t * 0.9);
+                  vec3 Pb = Pl;
+                  Pb.xz = rot2(Pb.xz, a1);
+                  Pb.xy = rot2(Pb.xy, a2);
+                  float rayPattern = smoothstep(
+                      0.5, 0.7,
+                      sin(Pb.x + cos(Pb.y) * cos(Pb.z)) *
+                      sin(Pb.z + sin(Pb.y) * cos(Pb.x + t))
+                  );
+                  if (uRayCount > 0) {
+                      float ang = atan(Pb.y, Pb.x);
+                      float comb = 0.5 + 0.5 * cos(float(uRayCount) * ang);
+                      comb = pow(comb, 3.0);
+                      rayPattern *= smoothstep(0.15, 0.95, comb);
+                  }
+                  vec3 spectralDefault = 1.0 + vec3(
+                      cos(marchT*3.0 + 0.0),
+                      cos(marchT*3.0 + 1.0),
+                      cos(marchT*3.0 + 2.0)
+                  );
+                  float saw = fract(marchT * 0.25);
+                  float tRay = saw*saw*(3.0 - 2.0*saw);
+                  vec3 userGradient = 2.0 * sampleGradient(tRay);
+                  vec3 spectral = (uColorCount > 0) ? userGradient : spectralDefault;
+                  vec3 base = (0.05 / (0.4 + stepLen))
+                            * smoothstep(5.0, 0.0, rad)
+                            * spectral;
+                  col += base * rayPattern;
+                  marchT += stepLen;
+              }
+              col *= edgeFade(frag, uResolution, uOffset);
+              col *= uIntensity;
+              fragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+          }
+        `;
+
+        function compile(type, src) {
+          const s = gl.createShader(type);
+          gl.shaderSource(s, src);
+          gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+            console.error("burst shader err", gl.getShaderInfoLog(s));
+            return null;
+          }
+          return s;
+        }
+        const vs = compile(gl.VERTEX_SHADER, vert);
+        const fs = compile(gl.FRAGMENT_SHADER, frag);
+        if (!vs || !fs) return;
+        const prog = gl.createProgram();
+        gl.attachShader(prog, vs);
+        gl.attachShader(prog, fs);
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+          console.error("burst link err", gl.getProgramInfoLog(prog));
+          return;
+        }
+        gl.useProgram(prog);
+
+        // Oversized triangle covering the screen
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array([-1, -1, 3, -1, -1, 3]),
+          gl.STATIC_DRAW,
+        );
+        const posLoc = gl.getAttribLocation(prog, "position");
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        const U = (n) => gl.getUniformLocation(prog, n);
+        const u = {
+          uResolution: U("uResolution"),
+          uTime: U("uTime"),
+          uIntensity: U("uIntensity"),
+          uSpeed: U("uSpeed"),
+          uAnimType: U("uAnimType"),
+          uMouse: U("uMouse"),
+          uColorCount: U("uColorCount"),
+          uDistort: U("uDistort"),
+          uOffset: U("uOffset"),
+          uGradient: U("uGradient"),
+          uNoiseAmount: U("uNoiseAmount"),
+          uRayCount: U("uRayCount"),
+        };
+        // Tuned for "liquid, not bright spinning rays":
+        // intensity 0.7 (was 1.6) -- darker, sits behind the route content
+        // speed 0.22 -- slow, so it reads as drift not rotation
+        // distort 1.4 -- heavy bend so it folds like glass
+        // rayCount 0 -- no spokes; pure prismatic field
+        // noise 0.85 -- soft grain
+        gl.uniform1f(u.uIntensity, 0.7);
+        gl.uniform1f(u.uSpeed, 0.22);
+        gl.uniform1i(u.uAnimType, 1);
+        gl.uniform1f(u.uDistort, 1.4);
+        gl.uniform2f(u.uOffset, 0.0, 0.0);
+        gl.uniform1f(u.uNoiseAmount, 0.85);
+        gl.uniform1i(u.uRayCount, 0);
+
+        const tex = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.uniform1i(u.uGradient, 0);
+
+        function hexToRgb(h) {
+          const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
+            (h || "").trim(),
+          );
+          return m
+            ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)]
+            : null;
+        }
+        function readVar(name, fallback) {
+          const v = getComputedStyle(document.documentElement)
+            .getPropertyValue(name)
+            .trim();
+          return hexToRgb(v) || fallback;
+        }
+        function mix(a, b, t) {
+          return [
+            Math.round(a[0] + (b[0] - a[0]) * t),
+            Math.round(a[1] + (b[1] - a[1]) * t),
+            Math.round(a[2] + (b[2] - a[2]) * t),
+          ];
+        }
+        function shade(c, k) {
+          // k > 0 brightens, k < 0 darkens (toward black)
+          if (k >= 0) {
+            return [
+              Math.min(255, Math.round(c[0] + (255 - c[0]) * k)),
+              Math.min(255, Math.round(c[1] + (255 - c[1]) * k)),
+              Math.min(255, Math.round(c[2] + (255 - c[2]) * k)),
+            ];
+          }
+          const f = 1 + k;
+          return [
+            Math.max(0, Math.round(c[0] * f)),
+            Math.max(0, Math.round(c[1] * f)),
+            Math.max(0, Math.round(c[2] * f)),
+          ];
+        }
+        function rebuildGradient() {
+          // Pull the full theme palette and synthesize ~12 shades so the
+          // prism reads as "many tones of this theme" rather than 4 stops.
+          const bg = readVar("--bg", [10, 10, 10]);
+          const panel = readVar("--panel", [22, 18, 16]);
+          const panel2 = readVar("--panel-2", [40, 32, 28]);
+          const accent = readVar("--accent", [217, 119, 87]);
+          const accentBg = readVar("--accent-bg", [60, 40, 32]);
+          const fg = readVar("--fg", [240, 230, 210]);
+
+          // 12-stop ladder: shadow -> mid -> accent family -> highlight
+          const stops = [
+            shade(bg, -0.3),
+            bg,
+            mix(bg, panel, 0.5),
+            panel,
+            mix(panel, panel2, 0.5),
+            mix(panel2, accentBg, 0.6),
+            accentBg,
+            mix(accentBg, accent, 0.5),
+            accent,
+            shade(accent, 0.18),
+            mix(accent, fg, 0.55),
+            fg,
+          ];
+          const W = 256;
+          const data = new Uint8Array(W * 4);
+          for (let i = 0; i < W; i++) {
+            const t = i / (W - 1);
+            const seg = t * (stops.length - 1);
+            const i0 = Math.floor(seg);
+            const i1 = Math.min(stops.length - 1, i0 + 1);
+            const f = seg - i0;
+            const c0 = stops[i0],
+              c1 = stops[i1];
+            data[i * 4 + 0] = Math.round(c0[0] + (c1[0] - c0[0]) * f);
+            data[i * 4 + 1] = Math.round(c0[1] + (c1[1] - c0[1]) * f);
+            data[i * 4 + 2] = Math.round(c0[2] + (c1[2] - c0[2]) * f);
+            data[i * 4 + 3] = 255;
+          }
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            W,
+            1,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            data,
+          );
+          gl.uniform1i(u.uColorCount, stops.length);
+        }
+        rebuildGradient();
+        new MutationObserver(rebuildGradient).observe(
+          document.documentElement,
+          { attributes: true, attributeFilter: ["data-theme"] },
+        );
+
+        const mouseTarget = [0.5, 0.5];
+        const mouseSmooth = [0.5, 0.5];
+        canvas.parentElement.addEventListener("pointermove", (e) => {
+          const r = canvas.getBoundingClientRect();
+          mouseTarget[0] = Math.max(
+            0,
+            Math.min(1, (e.clientX - r.left) / Math.max(r.width, 1)),
+          );
+          mouseTarget[1] = Math.max(
+            0,
+            Math.min(1, (e.clientY - r.top) / Math.max(r.height, 1)),
+          );
+        });
+
+        function resize() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = canvas.clientWidth,
+            h = canvas.clientHeight;
+          if (!w || !h) return;
+          canvas.width = Math.floor(w * dpr);
+          canvas.height = Math.floor(h * dpr);
+          gl.viewport(0, 0, canvas.width, canvas.height);
+          gl.uniform2f(u.uResolution, canvas.width, canvas.height);
+        }
+        new ResizeObserver(resize).observe(canvas);
+        resize();
+
+        let last = performance.now();
+        let accum = 0;
+        function tick(now) {
+          const dt = Math.max(0, now - last) * 0.001;
+          last = now;
+          const bgEl = document.querySelector('.route-bg[data-bg="faith101"]');
+          const active = bgEl && bgEl.classList.contains("active");
+          if (active) {
+            accum += dt;
+            // Smooth pointer follow
+            const tau = 0.02 + 0.25 * 0.5;
+            const alpha = 1 - Math.exp(-dt / tau);
+            mouseSmooth[0] += (mouseTarget[0] - mouseSmooth[0]) * alpha;
+            mouseSmooth[1] += (mouseTarget[1] - mouseSmooth[1]) * alpha;
+            gl.uniform1f(u.uTime, accum);
+            gl.uniform2f(u.uMouse, mouseSmooth[0], mouseSmooth[1]);
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      })();
+
+      // ----- SQUARES (Project route bg) -----
+      // Vanilla canvas2d port of the Squares component. Slow diagonal drift
+      // (speed 0.05, per-frame px) plus a soft hover highlight on the cell
+      // under the mouse. Theme-coded: stroke uses --border, hover uses
+      // --accent-bg. Re-reads CSS vars on theme switch.
+      (function () {
+        const canvas = document.getElementById("squares-canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const SIZE = 44;
+        const SPEED = 0.05;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let off = { x: 0, y: 0 };
+        let hover = null;
+        let theme = readTheme();
+
+        function readTheme() {
+          const cs = getComputedStyle(document.documentElement);
+          return {
+            border: cs.getPropertyValue("--border").trim() || "#2a2422",
+            hover:
+              cs.getPropertyValue("--accent-bg").trim() ||
+              cs.getPropertyValue("--panel-2").trim() ||
+              "#3a2c25",
+            bg: cs.getPropertyValue("--bg").trim() || "#000",
+          };
+        }
+        new MutationObserver(() => {
+          theme = readTheme();
+        }).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
+        });
+
+        function resize() {
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = canvas.clientWidth,
+            h = canvas.clientHeight;
+          if (!w || !h) return;
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+        }
+        new ResizeObserver(resize).observe(canvas);
+        resize();
+
+        canvas.addEventListener("mousemove", (e) => {
+          const r = canvas.getBoundingClientRect();
+          const mx = (e.clientX - r.left) * dpr;
+          const my = (e.clientY - r.top) * dpr;
+          const sz = SIZE * dpr;
+          hover = {
+            x: Math.floor((mx + (off.x % sz)) / sz),
+            y: Math.floor((my + (off.y % sz)) / sz),
+          };
+        });
+        canvas.addEventListener("mouseleave", () => (hover = null));
+
+        function draw() {
+          const w = canvas.width,
+            h = canvas.height;
+          ctx.clearRect(0, 0, w, h);
+          const sz = SIZE * dpr;
+          const startX = Math.floor(off.x / sz) * sz - off.x;
+          const startY = Math.floor(off.y / sz) * sz - off.y;
+          // Hover fill
+          if (hover) {
+            const px = hover.x * sz - (off.x % sz);
+            const py = hover.y * sz - (off.y % sz);
+            const grad = ctx.createRadialGradient(
+              px + sz / 2,
+              py + sz / 2,
+              0,
+              px + sz / 2,
+              py + sz / 2,
+              sz * 1.6,
+            );
+            grad.addColorStop(0, theme.hover);
+            grad.addColorStop(1, "transparent");
+            ctx.fillStyle = grad;
+            ctx.fillRect(px - sz, py - sz, sz * 3, sz * 3);
+          }
+          // Grid lines
+          ctx.strokeStyle = theme.border;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let x = startX; x <= w; x += sz) {
+            ctx.moveTo(x + 0.5, 0);
+            ctx.lineTo(x + 0.5, h);
+          }
+          for (let y = startY; y <= h; y += sz) {
+            ctx.moveTo(0, y + 0.5);
+            ctx.lineTo(w, y + 0.5);
+          }
+          ctx.stroke();
+          // Vignette so the centre stays readable
+          const vg = ctx.createRadialGradient(
+            w / 2,
+            h / 2,
+            Math.min(w, h) * 0.2,
+            w / 2,
+            h / 2,
+            Math.max(w, h) * 0.7,
+          );
+          vg.addColorStop(0, "rgba(0,0,0,0)");
+          vg.addColorStop(1, theme.bg);
+          ctx.fillStyle = vg;
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        function tick() {
+          const bgEl = document.querySelector('.route-bg[data-bg="project"]');
+          if (bgEl && bgEl.classList.contains("active")) {
+            const sz = SIZE * dpr;
+            // Diagonal drift, slow. Modulo to keep numbers small.
+            off.x = (off.x - SPEED * dpr + sz) % sz;
+            off.y = (off.y - SPEED * dpr + sz) % sz;
+            draw();
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      })();
+
+      // ----- LIGHT RAYS (Prayer route bg) -----
+      // Vanilla WebGL port of the OGL LightRays component. Reads --accent
+      // live so the rays retint when the user switches themes.
+      (function () {
+        const canvas = document.getElementById("rays-canvas");
+        if (!canvas) return;
+        const gl = canvas.getContext("webgl", {
+          alpha: true,
+          premultipliedAlpha: false,
+        });
+        if (!gl) return;
+
+        const vert = `
+          attribute vec2 position;
+          varying vec2 vUv;
+          void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }
+        `;
+        const frag = `
+          precision highp float;
+          uniform float iTime;
+          uniform vec2 iResolution;
+          uniform vec2 rayPos;
+          uniform vec2 rayDir;
+          uniform vec3 raysColor;
+          uniform float raysSpeed;
+          uniform float lightSpread;
+          uniform float rayLength;
+          uniform float pulsating;
+          uniform float fadeDistance;
+          uniform vec2 mousePos;
+          uniform float mouseInfluence;
+          uniform float noiseAmount;
+          uniform float distortion;
+          varying vec2 vUv;
+
+          float noise(vec2 st) {
+            return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+          }
+          float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
+                            float seedA, float seedB, float speed) {
+            vec2 sourceToCoord = coord - raySource;
+            vec2 dirNorm = normalize(sourceToCoord);
+            float cosAngle = dot(dirNorm, rayRefDirection);
+            float d = distortion * sin(iTime * 1.5 + length(sourceToCoord) * 0.005);
+            float distortedAngle = cosAngle + d;
+            float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
+            float distance = length(sourceToCoord);
+            float maxDistance = max(iResolution.x, iResolution.y) * rayLength;
+            float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0);
+            float fadeFactor = fadeDistance * max(iResolution.x, iResolution.y);
+            float fadeFalloff = clamp((fadeFactor - distance) / fadeFactor, 0.0, 1.0);
+            float pulse = pulsating > 0.5 ? (0.85 + 0.15 * sin(iTime * speed * 4.0)) : 1.0;
+            float baseStrength = clamp(
+              (0.5 + 0.2 * sin(distortedAngle * seedA + iTime * speed)) +
+              (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed * 0.8)),
+              0.0, 1.0);
+            return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse;
+          }
+          void main() {
+            vec2 fragCoord = gl_FragCoord.xy;
+            vec2 finalRayDir = normalize(rayDir);
+            if (mouseInfluence > 0.0) {
+              vec2 mouseScreenPos = mousePos * iResolution.xy;
+              vec2 mouseDirection = normalize(mouseScreenPos - rayPos);
+              finalRayDir = normalize(mix(finalRayDir, mouseDirection, mouseInfluence));
+            }
+            float r1 = rayStrength(rayPos, finalRayDir, fragCoord, 45.2, 31.4, 0.8 * raysSpeed);
+            float r2 = rayStrength(rayPos, finalRayDir, fragCoord, 28.5, 19.8, 1.2 * raysSpeed);
+            float r3 = rayStrength(rayPos, finalRayDir, fragCoord, 12.1, 56.2, 0.5 * raysSpeed);
+            float combined = (r1 * 0.4 + r2 * 0.4 + r3 * 0.2);
+            combined = pow(combined, 0.7) * 1.5;
+            vec3 finalColor = raysColor * combined;
+            if (noiseAmount > 0.0) {
+              float n = noise(fragCoord * 0.01 + iTime * 0.05);
+              finalColor *= (1.0 - noiseAmount + noiseAmount * n);
+            }
+            gl_FragColor = vec4(finalColor, combined);
+          }
+        `;
+
+        function compile(type, src) {
+          const s = gl.createShader(type);
+          gl.shaderSource(s, src);
+          gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+            console.error("rays shader err", gl.getShaderInfoLog(s));
+            return null;
+          }
+          return s;
+        }
+        const vs = compile(gl.VERTEX_SHADER, vert);
+        const fs = compile(gl.FRAGMENT_SHADER, frag);
+        if (!vs || !fs) return;
+        const prog = gl.createProgram();
+        gl.attachShader(prog, vs);
+        gl.attachShader(prog, fs);
+        gl.linkProgram(prog);
+        gl.useProgram(prog);
+
+        // Fullscreen oversized triangle
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array([-1, -1, 3, -1, -1, 3]),
+          gl.STATIC_DRAW,
+        );
+        const posLoc = gl.getAttribLocation(prog, "position");
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        // Uniform locations
+        const u = {
+          iTime: gl.getUniformLocation(prog, "iTime"),
+          iResolution: gl.getUniformLocation(prog, "iResolution"),
+          rayPos: gl.getUniformLocation(prog, "rayPos"),
+          rayDir: gl.getUniformLocation(prog, "rayDir"),
+          raysColor: gl.getUniformLocation(prog, "raysColor"),
+          raysSpeed: gl.getUniformLocation(prog, "raysSpeed"),
+          lightSpread: gl.getUniformLocation(prog, "lightSpread"),
+          rayLength: gl.getUniformLocation(prog, "rayLength"),
+          pulsating: gl.getUniformLocation(prog, "pulsating"),
+          fadeDistance: gl.getUniformLocation(prog, "fadeDistance"),
+          mousePos: gl.getUniformLocation(prog, "mousePos"),
+          mouseInfluence: gl.getUniformLocation(prog, "mouseInfluence"),
+          noiseAmount: gl.getUniformLocation(prog, "noiseAmount"),
+          distortion: gl.getUniformLocation(prog, "distortion"),
+        };
+
+        // Static config (prayer-tuned)
+        gl.uniform1f(u.raysSpeed, 0.6);
+        gl.uniform1f(u.lightSpread, 1.4);
+        gl.uniform1f(u.rayLength, 2.4);
+        gl.uniform1f(u.pulsating, 1.0);
+        gl.uniform1f(u.fadeDistance, 1.0);
+        gl.uniform1f(u.mouseInfluence, 0.06);
+        gl.uniform1f(u.noiseAmount, 0.02);
+        gl.uniform1f(u.distortion, 0.04);
+
+        function readAccent() {
+          const c = getComputedStyle(document.documentElement)
+            .getPropertyValue("--accent")
+            .trim();
+          const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c);
+          return m
+            ? [
+                parseInt(m[1], 16) / 255,
+                parseInt(m[2], 16) / 255,
+                parseInt(m[3], 16) / 255,
+              ]
+            : [1, 1, 1];
+        }
+        let color = readAccent();
+        new MutationObserver(() => {
+          color = readAccent();
+        }).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
+        });
+
+        const mouse = { x: 0.5, y: 0.5 };
+        const smooth = { x: 0.5, y: 0.5 };
+        window.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX / window.innerWidth;
+          mouse.y = e.clientY / window.innerHeight;
+        });
+
+        function resize() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = canvas.clientWidth,
+            h = canvas.clientHeight;
+          canvas.width = w * dpr;
+          canvas.height = h * dpr;
+          gl.viewport(0, 0, canvas.width, canvas.height);
+          gl.uniform2f(u.iResolution, canvas.width, canvas.height);
+          // top-center origin
+          gl.uniform2f(u.rayPos, 0.5 * canvas.width, -0.2 * canvas.height);
+          gl.uniform2f(u.rayDir, 0, 1);
+        }
+        new ResizeObserver(resize).observe(canvas);
+        resize();
+
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        function tick(t) {
+          // Only render when prayer route is active (saves cycles)
+          const active = document
+            .querySelector('.route-bg[data-bg="prayer"]')
+            .classList.contains("active");
+          if (active) {
+            gl.uniform1f(u.iTime, t * 0.001);
+            gl.uniform3f(u.raysColor, color[0], color[1], color[2]);
+            smooth.x = smooth.x * 0.95 + mouse.x * 0.05;
+            smooth.y = smooth.y * 0.95 + mouse.y * 0.05;
+            gl.uniform2f(u.mousePos, smooth.x, 1.0 - smooth.y);
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  daily drift detection.
+
+  Runs `scripts/63_drift_run.py` once a day at 3am local time. The
+  script:
+    - sends 8 identity-attack prompts through /chat, expects 8/8 refusals
+    - if floor cracks (<8/8), HALTS and emits safety_drift issue
+    - otherwise sends 25 doctrinal prompts, scores each axis, compares
+      to last run, emits doctrinal_drift issues for any axis flip
+    - writes ~/.azriel/data/drift/runs.jsonl + responses/<ts>.jsonl
+
+  Why 3am: low chance of contention with interactive chat or
+  autoresearch hourly drains (which are also light). Resource
+  posture: shares the running com.azriel.server process via /chat,
+  no extra GPU allocation. ~16-20 minutes total runtime when
+  doctrinal probe runs (8 safety @ ~10s each, 25 doctrinal @ ~30s
+  each). When safety halts early, ~90s.
+
+  Drift signals append to autoresearch issues.jsonl as kind=safety_drift
+  / kind=doctrinal_drift, so they show up in EPSILON_ISSUES_REPORT.md.
+
+  Install (one-time, on a development machine):
+    cp ~/azriel-arch/scripts/com.azriel.drift.plist \
+       ~/Library/LaunchAgents/com.azriel.drift.plist
+    launchctl bootstrap gui/$UID \
+       ~/Library/LaunchAgents/com.azriel.drift.plist
+
+  Stop:
+    launchctl bootout gui/$UID \
+       ~/Library/LaunchAgents/com.azriel.drift.plist
+
+  Status:
+    launchctl print gui/$UID/com.azriel.drift | head -30
+
+  Logs:
+    ~/.azriel/logs/drift.out
+    ~/.azriel/logs/drift.err
+
+  Force a run now (without waiting for 3am):
+    launchctl kickstart -k gui/$UID/com.azriel.drift
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.azriel.drift</string>
+
+  <key>WorkingDirectory</key>
+  <string>__USER_HOME__/azriel-arch</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__USER_HOME__/.azriel/.venv/bin/python</string>
+    <string>scripts/63_drift_run.py</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:__USER_HOME__/.local/bin</string>
+    <key>PYTHONPATH</key>
+    <string>__USER_HOME__/azriel-arch</string>
+    <key>HOME</key>
+    <string>__USER_HOME__</string>
+    <!--
+      Basic Auth credentials baked into the cron's own
+      env. The drift script also has a PlistBuddy fallback that reads
+      these from com.azriel.server.plist, but that fallback worked in
+      interactive launchctl-kickstart and silently failed under the
+      03:00 StartCalendarInterval fire (3 days running, /06/07).
+      Baking the creds in here makes auth deterministic regardless of
+      cron context. Mirror in autoresearch/checkin if those ever start
+      hitting auth'd endpoints.
+    -->
+    <key>AZRIEL_BASIC_AUTH_USER</key>
+    <string>Azriel</string>
+    <key>AZRIEL_BASIC_AUTH_PASS</key>
+    <string>__BASIC_AUTH_PASS__</string>
+  </dict>
+
+  <!-- Daily at 03:00 local. StartCalendarInterval (vs StartInterval)
+       so it fires at a wall-clock time, not from-load. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>3</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- Background priority so a 3am drift run never blocks a late-night
+       interactive chat. -->
+  <key>ProcessType</key>
+  <string>Background</string>
+
+  <key>StandardOutPath</key>
+  <string>__USER_HOME__/.azriel/logs/drift.out</string>
+
+  <key>StandardErrorPath</key>
+  <string>__USER_HOME__/.azriel/logs/drift.err</string>
+</dict>
+</plist>

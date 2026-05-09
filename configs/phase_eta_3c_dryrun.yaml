@@ -1,0 +1,31 @@
+# 5-iter gradient-stability dry-run.
+#
+# Goal: confirm Qwen3.6-35B-A3B can take LoRA gradient at lr=2e-5
+# without the iter-20-style spike we saw in the prior recipe. Output is
+# disposable; we look at train-loss trajectory only.
+#
+# Used by: scripts/68_eta_3c_dryrun.sh
+
+model: "~/.azriel/checkpoints/qwen3.6-35b-a3b-mlx-4bit"
+data: "~/.azriel/data/lora_eta3b"
+adapter_path: "~/.azriel/checkpoints/lora-azriel-v0.8.0-dryrun"
+
+fine_tune_type: lora
+train: true
+
+num_layers: 8
+batch_size: 1
+iters: 5
+learning_rate: 2.0e-5
+
+val_batches: 5
+steps_per_eval: 5
+steps_per_report: 1
+save_every: 5
+
+max_seq_length: 1024
+
+lora_parameters:
+  rank: 16
+  scale: 20.0
+  dropout: 0.0

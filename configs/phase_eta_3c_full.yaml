@@ -1,0 +1,38 @@
+# Full LoRA config for Qwen3.6-35B-A3B base.
+#
+# Used by: scripts/69_eta_3c_full.sh (passed via mlx_lm.lora -c)
+# Output: ~/.azriel/checkpoints/lora-azriel-v0.8.0-pre3/
+#
+# Differences from the prior recipes (both rejected):
+# - lr 1e-4 -> 2e-5 (5x smaller; updates the 35B base can absorb)
+# - iters 30 -> 120 (4x longer; 35B needs more steps to consolidate)
+# - num_layers: 8 (kept low to keep update magnitude per step modest)
+# - data: data/lora_eta3b (presplit; no truncation)
+# - steps_per_eval: 15 (eight val readouts across the run; abort if reversal)
+# - save_every: 30 (four checkpoints; recover prior if val reverses)
+
+model: "~/.azriel/checkpoints/qwen3.6-35b-a3b-mlx-4bit"
+data: "~/.azriel/data/lora_eta3b"
+adapter_path: "~/.azriel/checkpoints/lora-azriel-v0.8.0-pre3"
+
+fine_tune_type: lora
+train: true
+
+num_layers: 8
+batch_size: 1
+iters: 120
+learning_rate: 2.0e-5
+
+# Eight val readouts across the run; if val reverses at any eval point
+# while the run is in flight, kill it and keep the prior checkpoint.
+val_batches: 5
+steps_per_eval: 15
+steps_per_report: 5
+save_every: 30
+
+max_seq_length: 1024
+
+lora_parameters:
+  rank: 16
+  scale: 20.0
+  dropout: 0.0

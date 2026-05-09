@@ -1,0 +1,40 @@
+# Mini-recipe LoRA config for Qwen3.6-35B-A3B base.
+#
+# Used by: scripts/65_eta_3_lora_train.sh (passed via mlx_lm.lora -c)
+# Output: ~/.azriel/checkpoints/lora-azriel-v0.8.0-pre/
+
+# Model + data
+model: "~/.azriel/checkpoints/qwen3.6-35b-a3b-mlx-4bit"
+data: "~/.azriel/data/lora"
+adapter_path: "~/.azriel/checkpoints/lora-azriel-v0.8.0-pre"
+
+# Training type + recipe
+fine_tune_type: lora
+train: true
+
+# Recipe: rank=16, lr=1e-4, 30 iters, batch=1
+num_layers: 16
+batch_size: 1
+iters: 30
+learning_rate: 1.0e-4
+
+# Evaluation cadence (small ratio; the run is only 30 iters)
+val_batches: 5
+steps_per_eval: 30
+steps_per_report: 5
+save_every: 30
+
+# Sequence length: dropped 2048 → 1024 in an earlier attempt because an
+# outlier 2424-token training sample was causing peak-memory spikes
+# past iter 15 that OOM'd Qwen3.6's wider per-layer activations even
+# with --grad-checkpoint and num_layers=8. The training corpus has
+# one outlier; everything else fits in 1024 already (per the warning
+# "longest sentence 2424 will be truncated to 2048" — only one row
+# trips the cap).
+max_seq_length: 1024
+
+# LoRA-specific knobs (rank lives here, not in --num-layers)
+lora_parameters:
+  rank: 16
+  scale: 20.0
+  dropout: 0.0

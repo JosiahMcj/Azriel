@@ -1,0 +1,31 @@
+# Azriel runtime dependencies. Tested on Python 3.11 / Mac (mlx-lm)
+# (Apple Silicon). Pin floors known-good as of v0.1; upper bounds left
+# open so security patches flow.
+#
+# Install:
+# python -m venv .venv && source .venv/bin/activate
+# pip install -r requirements.txt
+#
+# The base model (Qwen3-Coder-30B-A3B-Instruct, ~70 GB at bf16) is
+# pulled lazily by mlx_lm on first run and cached under ~/.cache/.
+
+# --- Mac (mlx-lm) model runtime ----------------------------------
+mlx>=0.21
+mlx-lm>=0.20
+
+# --- HTTP server --------------------------------------------------
+fastapi>=0.110
+uvicorn[standard]>=0.27
+starlette>=0.36
+pydantic>=2.5
+anyio>=4.2
+
+# --- Optional: training pipeline (scripts/) -----------------------
+# Uncomment if you intend to run scripts/2x_*_train.* or the data-prep
+# pipeline. Inference and the live server do not require these.
+#
+# datasets>=2.18
+# transformers>=4.40
+# numpy>=1.26
+# pandas>=2.0
+# huggingface_hub>=0.22
